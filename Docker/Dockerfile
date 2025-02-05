@@ -13,6 +13,9 @@ RUN apk add --no-cache \
 COPY ./requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install mkdocs
+RUN pip install mkdocs
+
 # Final lightweight image
 FROM python:3.9-alpine
 
