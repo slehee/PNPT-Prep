@@ -55,13 +55,18 @@ Push to GitHub:
 
 If you prefer using Docker, you can run the MkDocs server inside a container:
 
-docker-compose up --build
+`docker-compose up --build`
 
 or manually:
 
 cd Linux-PrivEsc
 
-docker build -t linux-privesc-docs -f Docker/Dockerfile .
-docker run -d -p 8000:8000 linux-privesc-docs
+   
+`docker build -t linux-privesc-docs -f Docker/Dockerfile .`
+
+
+
+
+`docker run -d -p 8000:8000 linux-privesc-docs`
 
 Then, visit http://localhost:8000.
