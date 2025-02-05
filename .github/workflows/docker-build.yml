@@ -1,0 +1,29 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - workflow-test  # Runs only on this test branch
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: Docker  # Ensure this points to your Dockerfile directory
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/linux-privesc:latest
