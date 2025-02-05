@@ -24,6 +24,7 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: .  # Fix: Includes mkdocs.yml in the build
+          context: .  # Keep this to include mkdocs.yml
+          file: Docker/Dockerfile  # Specify the correct path to the Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/linux-privesc:latest
