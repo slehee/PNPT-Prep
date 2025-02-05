@@ -22,6 +22,6 @@ docker run -d -p 8000:8000 linux-privesc-docs
 
 Then, visit http://localhost:8000.
 
-Or you can pull down the image : `docker pull ghcr.io/slehee/linux-privesc:latest` 
+Or you can pull down the image : docker pull ghcr.io/slehee/linux-privesc:latest
 
-then run `docker run -d -p 8000:8000 --name priv ghcr.io/slehee/linux-privesc`
+then run docker run -d -p 8000:8000 --name priv ghcr.io/slehee/linux-privesc
