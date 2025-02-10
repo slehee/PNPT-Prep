@@ -366,7 +366,7 @@ uid=1000(TCM) gid=1000(user) euid=0(root)
 The **effective user ID (`euid=0`) is root**, confirming privilege escalation.
 
 !!!importanat 
-    One of the most comon cron jobs Priv Esc technique is the file overweites!
+    One of the most comon cron jobs Priv Esc technique is the file overwrites!
 
 ## Why Does This Work?
 - **Cron jobs execute scripts as root**.
@@ -517,6 +517,20 @@ If you're www-data, try upgrading your shell:
 ```sh
 python3 -c 'import pty; pty.spawn("/bin/bash")'
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## References
 
 [Linux Privilege Escalation using Capabilities](https://www.hackingarticles.in/linux-privilege-escalation-using-capabilities/)
