@@ -3,7 +3,13 @@ site_author: ' slehee'
 copyright: Copyright &copy; 2025 slehee
 nav:
     - PrivEsc:
-        - Linux: linux.md
+        - Linux: 
+            - linux.md
+            - Practice machines:
+               - ultratech.md   
+               - lazy admin.md  
+               - anonymous.md
+
 
 theme:
     name: material

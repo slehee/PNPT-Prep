@@ -39,6 +39,7 @@ Privilege escalation is all about:
 - Last logged on users (`last -n 10`)
 - Shows users logged onto the host (`who`)
 - List all users including UID/GID information (`cat /etc/passwd`)
+- List users with shell (`awk -F: '$NF ~ /bash$/ {print $1}' /etc/passwd`)
 - List root accounts (`awk -F: '$3 == 0 { print $1 }' /etc/passwd`)
 - Extracts password policies and hash storage method information (`cat /etc/login.defs | grep -i pass`)
 - Checks umask value (`umask`)
