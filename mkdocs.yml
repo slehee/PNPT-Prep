@@ -9,6 +9,8 @@ nav:
                - ultratech.md   
                - lazy admin.md  
                - anonymous.md
+               - ghostcat.md
+               - convert.md
 
 
 theme:
