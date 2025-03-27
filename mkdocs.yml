@@ -2,6 +2,12 @@ site_name: CyberTraining
 site_author: ' slehee'
 copyright: Copyright &copy; 2025 slehee
 nav:
+    - PNPT:
+        - Intro:
+            - intro.md
+            - method.md
+        - Active Directory:
+            - AD.md
     - PrivEsc:
         - Linux: 
             - linux.md
