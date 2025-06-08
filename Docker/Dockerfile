@@ -1,5 +1,5 @@
 # Use a lightweight base image
-FROM python:3.9-alpine AS builder
+FROM python:3.13.3-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install mkdocs
 
 # Final lightweight image
-FROM python:3.9-alpine
+FROM python:3.13.3-alpine
 
 # Set working directory
 WORKDIR /app
