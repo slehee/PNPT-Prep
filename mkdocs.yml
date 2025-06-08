@@ -18,6 +18,7 @@ nav:
                - ghostcat.md
                - convert.md
                - titanic.md
+               - whiterabbit.md
 
 
 theme:
