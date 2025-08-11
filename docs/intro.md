@@ -7,7 +7,7 @@ Most common type performed, assessing and testing an organization's security fro
 
 They also tend to be cheaper than other types of pentesting. This makes it easier for companies to start adopting pentesting as a practice for their security.
 #### Methodology
-Focuses heavily on [OSINT](/cybersecurity/TTPs/recon/OSINT.md), gathering open-source information on the company and its employees. Usually takes ~32-40 hours + 8-16 for report writing.
+Focuses heavily on OSINT, gathering open-source information on the company and its employees. Usually takes ~32-40 hours + 8-16 for report writing.
 ##### OSINT
 What data can be gathered (which is public) to aid breaking in/ exploiting the organization's network and gaining access to restricted spaces/ information?
 
@@ -17,7 +17,7 @@ Instead, OSINT is focused on *gathering intel* such as what is the topology of t
 ### Internal Network Pentest
 Assessing the security of an organization's from *inside the network*. The network has already been breached and/or part of the agreement w/ the client is to allow a laptop/ device to be brought internally and attached to the network (which the pentester can then remote into to perform the assessment).
 #### Methodology
-Focuses heavily on [Active Directory](nested-repos/PNPT-study-guide/PEH/active-directory/active-directory-overview.md) attacks. A majority of organizations use Active Directory in the technical environments, so it's critical to understand in order to perform internal pentests.
+Focuses heavily on [Active Directory](AD.md) attacks. A majority of organizations use Active Directory in the technical environments, so it's critical to understand in order to perform internal pentests.
 
 Usually last 32-40 hours w/ another 8-16 hours for writing the report.
 ### Web Application Pentest
@@ -43,7 +43,7 @@ Usually takes 16-40 hours depending on the task, w/ 4-8 hours for report writing
 ##### Social Engineering
 *The weakest element in an organization's security is the human element*!
 
-Social engineering is using manipulation to gain access to or gather restricted information on a target. A common example of a social engineering tactic is [phishing](/cybersecurity/attacks/phishing.md).
+Social engineering is using manipulation to gain access to or gather restricted information on a target. A common example of a social engineering tactic is [phishing](phishing.md).
 
 Social engineering and physical pentesting tend to go hand in hand. 
 ### Other Assessments:

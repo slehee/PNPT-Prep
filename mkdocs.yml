@@ -8,6 +8,10 @@ nav:
             - method.md
         - Active Directory:
             - AD.md
+    - PMAT:
+        - Intro:
+            - basic_static_analysis.md
+        
     - PrivEsc:
         - Linux: 
             - linux.md
@@ -17,9 +21,9 @@ nav:
                - anonymous.md
                - ghostcat.md
                - convert.md
-               - titanic.md
                - whiterabbit.md
-
+    - OpSec:
+        - OpSec.md
 
 theme:
     name: material

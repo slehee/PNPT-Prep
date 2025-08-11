@@ -38,19 +38,107 @@ You can use this script to build the AD environment. [pimpmyadlab](https://githu
 
 * Objects - user, groups, contacts, computers, etc.; everything inside a domain.
 
-* **Types of accounts:**
 
-* built-in administrator
-* local administrator
-* Active Directory administrator
-* Active Directory user (can be local administrator)
+# Active Directory Hierarchy (Forest → Domain → OU → Objects)
 
+## 1. Forest (Top-Level)
+
+- The highest level of an Active Directory environment.
+- A forest contains one or more domains that share a common schema and Global Catalog.
+
+**Example:**
+
+    Forest: marvel.local
+
+---
+
+## 2. Domains
+
+- A domain is a logical group of computers, users, and resources under a single domain name.
+- Each domain has its own policies, users, and security settings, but trusts other domains in the same forest.
+
+**Examples:**
+
+    Domain: marvel.local
+    Child Domain: stark.marvel.local
+
+---
+
+## 3. Organizational Units (OUs)
+
+- Subdivisions within a domain used to organize users, groups, and computers.
+- OUs allow the application of Group Policy (GPO) for security and settings management.
+
+**Example:**
+
+    marvel.local
+    ├── Users
+    ├── Computers
+    ├── IT Department
+    ├── Security Team
+
+---
+
+## 4. Objects
+
+- The individual elements inside Active Directory.
+
+**Common objects include:**
+
+- Users (e.g., pparker, tstark)
+- Groups (e.g., Domain Admins, Developers)
+- Computers (e.g., SPIDERMAN-PC, IRONMAN-SERVER)
+- Printers, Shared Folders, etc.
+
+---
+
+## Summary: Local vs Domain Account
+
+**Local Account (.\username):**
+
+- Used to log into the local machine only.
+- Useful when offline or when the domain controller is unreachable.
+- Does not authenticate with Active Directory.
+- Example login:
+
+      .\admin
+
+**Domain Account (domain\username):**
+
+- Used to authenticate against Active Directory.
+- Accesses domain-joined resources and services.
+- Example login:
+
+      MARVEL\pparker
+
+**Key Differences:**
+
+- Authentication Scope: Local machine vs full domain.
+- Use Case: Offline/local login vs accessing network resources.
+- Access to AD: None vs full.
+
+
+## Logging in with .\username vs <domain>\username
+
+`.\username` (Local User Account)
+
+The `.`(dot) represents the local machine. Used to log in with a local user account instead of a domain account
+
+* Example: `.\admin` is the same as `SPIDERMAN\admin` (if the machine’s hostname is SPIDERMAN)
+
+## When to use it?
+  * When logging in without a network connection.
+  * When the machine is not joined to a domain.
+  * When the domain controller is down but you still have local admin access.
 
 !!! Note
 I had some issues with the SMB share from the server side.
 So In services.msc i have started `Function Discovery Resource Publication` and
 run in Powershell `Set-NetFirewallRule -DisplayGroup "Network Discovery" -Enabled True`
 `Set-NetConnectionProfile -NetworkCategory Private`
+
+
+
 
 ## Attacking Active Directory: Initial Attack Vectors
 
