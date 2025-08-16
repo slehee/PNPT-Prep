@@ -386,3 +386,16 @@ After detonation and network analysis, we pivot to host-based indicators using P
 
 
 ---
+
+### Host-Based TCP Artifacts & TCPView
+
+When analyzing malware, it's important to recognize that some network-related indicators are only observable from the host itself, not on the network wire. These are known as TCP artifacts. For example, when a binary initiates a TCP connection, the operating system uses specific functions to open sockets and manage connections. These events can be detected as host-based indicators, even if they don't appear in network captures like Wireshark.
+
+**Key Points:**
+- **TCP Artifacts:** Indicators such as opened sockets and outbound connections are visible on the host, not on the network wire.
+- **Detection Tools:** Tools like TCPView (from the Sysinternals Suite) allow you to monitor active TCP connections and sockets on the host.
+
+
+![tcpview](assets/img/tcpview.png)
+
+![base64](assets/img/base64.png)
