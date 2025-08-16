@@ -9,9 +9,9 @@ nav:
         - Active Directory:
             - AD.md
     - PMAT:
-        - Intro:
-            - basic_static_analysis.md
-        
+        - Basic Static & Dynamic Analysis:
+            - basic_static_&&_dynamic_analysis.md
+
     - PrivEsc:
         - Linux: 
             - linux.md
