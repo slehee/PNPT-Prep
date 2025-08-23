@@ -398,4 +398,124 @@ When analyzing malware, it's important to recognize that some network-related in
 
 ![tcpview](assets/img/tcpview.png)
 
+---
+
+### Command Injection & Bind Shell Analysis
+
+During dynamic analysis, the malware was observed opening a listening socket on TCP port 5555. Data sent and received over this socket was Base64 encoded, as confirmed by decoding responses to commands such as `id` and `whoami`. This behavior demonstrates command injection capability, with the malware executing system commands and returning their output in Base64 format.
+
+Screenshots captured during analysis (see below) provide evidence of successful command execution and exception handling. The malware responds to valid commands with their output and to invalid commands with error messages, confirming robust command execution logic.
+
 ![base64](assets/img/base64.png)
+
+Further investigation using ProcMon and TCPView revealed:
+- The process opens, sends, receives, and disconnects TCP connections on port 5555.
+- ProcMon can be used to filter for TCP operations, providing additional insight into socket activity beyond what TCPView offers.
+- The malware attempts to locate and execute binaries such as `whoami.exe` from the system, returning results to the connected client.
+
+This confirms the sample is a remote access trojan (RAT) with bind shell and command injection capabilities. Any client connecting to port 5555 can issue commands, which are executed on the infected host and returned via TCP.
+
+**Final Sample Name:** `ratcmdshell.exe` (reflecting its bind shell and command injection functionality)
+
+---
+
+# Basic Dynamic Analysis: `rat.unknown2.exe`
+
+This section documents the analysis of the second sample, `rat.unknown2.exe`, located in the 2.BasicDynamicAnalysis directory. The IR team provided hashes and a readme, noting this sample is similar to the previous RAT and is likely custom and previously unseen in the wild.
+
+## Initial Artifacts
+
+| Artifact Type | Details |
+|--------------|--------|
+| **MD5 Hash**      | c211704777e168a5151de79dc87ffac7 |
+| **SHA-256 Hash**  | c522e0f1f9edb7e03c0a770e4c52a93db72dce21e7247322f4bbd5b053b967aab5240ce90d6aa65a79e3a3068f227346bf0190f9ca762fb8e8d076a58490d7a1 |
+| **Archive Password** | infected |
+| **Extraction Method** | 7-zip archive, extracted to desktop |
+| **Sample Name**   | rat.unknown2.exe |
+
+## Basic Static Artifact Collection
+
+| Step | Tool/Method | Result/Notes |
+|------|-------------|--------------|
+| Extract readable strings | FLOSS | NIM libraries, socket callouts, cmd.exe /c, .local, no clear URLs or IPs |
+| IAT/API analysis | PEStudio | VirtualProtect flagged, but not definitive; connect, select, send (network group) |
+| Hashes & VT | Provided/uploaded | No results on VirusTotal (custom sample) |
+
+- Strings analysis reveals NIM compilation, socket-related functions, and command execution capability (cmd.exe /c), but no clear network indicators.
+- IAT/API analysis shows some suspicious calls, but nothing conclusive.
+
+## Dynamic Analysis: rat.unknown2.exe
+
+- Remnux, INetSim, and Wireshark running to capture network traffic.
+- Sample executed after reverting VM to clean state.
+
+| Indicator Type   | Details |
+|------------------|---------|
+| **Network**      | Socket open, send, receive operations detected; no clear external network indicators or URLs observed |
+| **Host**         | Command execution capability (cmd.exe /c); socket activity confirmed |
+| **Other**        | NIM libraries and socket functions present |
+
+- Dynamic analysis confirms socket capability and command execution, but no external network indicators (likely by design).
+- ProcMon and TCPView can be used to monitor socket operations and process activity.
+- The sample demonstrates similar behavior to the previous RAT, focusing on local socket and command execution rather than external communication.
+
+
+![kadus](assets/img/kadus.png)
+
+
+### Additional Dynamic Analysis Findings
+
+During dynamic analysis of `rat.unknown2.exe`, DNS queries were observed for the domain `aaaaaaaaaaaaaaaaaaaa.kadusus.local` (A record). This domain is not present in the static strings, indicating the use of `runtime string construction—a `common malware tactic to evade detection by breaking up and assembling strings only during execution.
+
+- The DNS query is built at runtime, concatenating multiple 'a' characters with the domain suffix.
+- No HTTP or TCP network traffic was observed; the primary network indicator is the DNS callout.
+- ICMP traffic was also observed but failed, further confirming the lack of other network protocols in use.
+
+- DNS query for `kadusus.local`:
+  ![kadus](assets/img/kadus.png)
+
+#### Analyst Technique: Hosts File Redirection
+To further analyze the sample, the hosts file can be edited to redirect`aaaaaaaaaaaaaaaaaaaa.kadusus.local`  to `127.0.0.1`, tricking the malware into thinking it is connecting to its intended server. This is useful for observing additional behavior or callbacks.
+
+---
+
+### Reverse Shell & Network Behavior Summary
+
+Further dynamic analysis of `rat.unknown2.exe` revealed the following:
+
+- The binary attempts to resolve a DNS A record for `aaaaaaaaaaaaaaaaaaaa.kadusus.local`, constructed at runtime to evade static detection.
+- By editing the hosts file to redirect this domain to `127.0.0.1`, the analyst can trick the malware into connecting to the local machine.
+- ProcMon output shows a successful TCP connection to `kadusus.local` on port 443 (HTTPS), confirming the use of encrypted communication.
+- Setting up a listener (e.g., with `nc -nvlp 443`) allows the analyst to observe the malware establishing a reverse shell connection.
+- Once connected, the analyst can issue commands (e.g., `whoami`, `id`) and receive output, demonstrating full reverse shell capability.
+- TCP connect, send, and receive operations are visible in ProcMon, confirming the malware's network and command execution behavior.
+
+- ProcMon output showing DNS and TCP activity:
+  ![procmon](assets/img/dns.reco.png)
+- Reverse shell connection established:
+  ![reverse](assets/img/reverse.shell.png)
+
+### Parent-Child Process Relationships in Reverse Shells
+
+In part two of the reverse shell analysis for `rat.unknown2.exe`, we broadened our ProcMon filters to observe not just TCP activity, but all process events. By issuing commands like `id`, we confirmed the malware's behavior: it attempts to execute commands by searching for binaries in the current working directory, then in System32 if not found. Successful execution results in TCP send/receive events wrapping the command output.
+
+A key concept for defenders and analysts is the parent-child process relationship. Using ProcMon's process tree feature, we observed:
+- `rat.unknown2.exe` is spawned as a child of `explorer.exe` (the main Windows interactive process).
+- When the malware executes a command (e.g., `ipconfig`, `id`, `whoami`), it spawns a child process: `cmd.exe` with the relevant arguments.
+- The process tree clearly shows `rat.unknown2.exe` as the parent, with multiple child `cmd.exe` processes for each command executed.
+
+This relationship is crucial for detection: unknown executables spawning `cmd.exe` and further commands is a strong indicator of suspicious activity. Advanced endpoint detection products often visualize these relationships to help analysts spot anomalies.
+
+  ![parent](assets/img/parent_child.png)
+
+
+**Analyst Tip:**
+- Don't just filter by process name; filter by Parent PID (PPID) to capture all child processes spawned by the malware. This reveals the full scope of command execution and process spawning.
+
+**Summary:**
+- `rat.unknown2.exe` demonstrates classic reverse shell behavior, spawning child processes for command execution and returning output via TCP.
+- Parent-child process analysis in ProcMon is essential for understanding and detecting malware behavior.
+- `rat.unknown2.exe` is a NIM-compiled reverse shell trojan that constructs its DNS callout at runtime, connects to a specified domain on port 443, and provides remote command execution via a reverse shell.
+- Key indicators: DNS A record for `kadusus.local`, TCP connection on port 443, reverse shell behavior, runtime string construction.
+- Analyst techniques: hosts file redirection, ProcMon filtering, listener setup for reverse shell interaction.
+
