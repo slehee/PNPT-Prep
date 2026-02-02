@@ -7,6 +7,7 @@ WORKDIR /app
 # Install necessary build tools and dependencies
 RUN apk add --no-cache \
     gcc g++ make musl-dev libffi-dev \
+    jpeg-dev zlib-dev \
     pango gdk-pixbuf cairo gobject-introspection-dev
 
 # Copy and install Python dependencies
@@ -24,10 +25,11 @@ WORKDIR /app
 
 # Install runtime dependencies for WeasyPrint
 RUN apk add --no-cache \
+    libjpeg zlib \
     pango gdk-pixbuf cairo gobject-introspection
 
 # Copy installed dependencies from builder stage
-COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=builder /usr/local/lib/python3.14/site-packages /usr/local/lib/python3.14/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Copy MkDocs project files
