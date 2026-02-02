@@ -25,7 +25,7 @@ WORKDIR /app
 
 # Install runtime dependencies for WeasyPrint
 RUN apk add --no-cache \
-    libjpeg zlib \
+    libjpeg \
     pango gdk-pixbuf cairo gobject-introspection
 
 # Copy installed dependencies from builder stage
