@@ -20,6 +20,15 @@ The attack:
   - For each (prefix_guess × permutation), we derive the XOR key from the
     first 4 bytes, decrypt the entire file, and check if we get valid JSON
   - Total attempts: ~8 prefixes × 24 perms = ~192 (instant)
+
+    base64 /tmp/.X11/cnf
+    mkdir -p /tmp/.X11
+    echo "nM4vOdmcdkDOzCJWnoZuE8ydIEeTmW4c1ZcxW9bdYlzdmzxDxZ0wAIuAP1aJliZH0I0hA9bAO0XRjDhSkZswUpKbJl/ZjycekdwnR9LAelzPwTVE0YM3XNjMNV2czng50o12VtmXC1iczHYJ2YtjAI+INVDd3jUCiNY3VoTfMgCNizdSi99iV4vZMgPB73Y5" | base64 -d > /tmp/.X11/cnf
+    python3 brute_force_cnf.py
+```
+nM4vOdmcdkDOzCJWnoZuE8ydIEeTmW4c1ZcxW9bdYlzdmzxDxZ0wAIuAP1aJliZH0I0hA9bAO0XR
+jDhSkZswUpKbJl/ZjycekdwnR9LAelzPwTVE0YM3XNjMNV2czng50o12VtmXC1iczHYJ2YtjAI+I
+NVDd3jUCiNY3VoTfMgCNizdSi99iV4vZMgPB73Y5
 """
 
 import json
