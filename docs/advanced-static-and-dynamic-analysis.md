@@ -1,5 +1,5 @@
 
-# Advanced Analysis & Assembley Language
+# Advanced Analysis & Assembly Language
 
 ![assembly](assets/img/assembly101.png)
 

