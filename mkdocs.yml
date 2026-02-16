@@ -102,8 +102,9 @@ markdown_extensions:
 plugins:
     - macros
     - search 
-    - with-pdf:
-        cover_subtitle: ''
-        output_path: pdf/E.pdf
-        enabled_if_env: ENABLE_PDF_EXPORT 
+    # PDF export disabled for local development - use Docker for PDF generation
+    # - with-pdf:
+    #     cover_subtitle: ''
+    #     output_path: pdf/E.pdf
+    #     enabled_if_env: ENABLE_PDF_EXPORT 
         

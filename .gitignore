@@ -1,3 +1,6 @@
 lin_env/
 .env/
+venv/
+.venv/
+
 
