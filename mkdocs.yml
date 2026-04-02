@@ -30,6 +30,7 @@ nav:
               - needle-in-a-haystack.md
               - game-of-pods.md
               - malware-busters.md
+              - trust-issues.md
           - Caldera:
               - setup-caldera.md
   - OpSec:
