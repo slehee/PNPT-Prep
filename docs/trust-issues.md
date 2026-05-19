@@ -10,8 +10,6 @@
 | **Challenge** | Trust Issues |
 | **Platform** | Cloud Security Championship (Wiz Research) |
 | **Author** | Eden Abergil |
-| **Status** | ✅ SOLVED |
-| **Solved By** | 75 other players |
 | **Flag** | `CTF{supply_chain_by_M@G!C_St3a1ER}` |
 
 ---

@@ -31,6 +31,8 @@ nav:
               - game-of-pods.md
               - malware-busters.md
               - trust-issues.md
+              - confession-booth.md
+              - happy-birthday.md
           - Caldera:
               - setup-caldera.md
   - OpSec:
@@ -85,9 +87,10 @@ markdown_extensions:
   - pymdownx.caret
   - pymdownx.tilde
   - footnotes
-  - plantuml_markdown:
-      format: svg
-      server: http://www.plantuml.com/plantuml
+  # plantuml_markdown requires Java + plantuml-markdown package (Docker only)
+  # - plantuml_markdown:
+  #     format: svg
+  #     server: http://www.plantuml.com/plantuml
   - pymdownx.superfences
   - pymdownx.tasklist:
       clickable_checkbox: true
