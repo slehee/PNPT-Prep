@@ -33,6 +33,7 @@ nav:
               - trust-issues.md
               - confession-booth.md
               - happy-birthday.md
+              - perimeter-leak.md
           - Caldera:
               - setup-caldera.md
   - OpSec:
