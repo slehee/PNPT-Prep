@@ -1,8 +1,6 @@
 # Perimeter Leak
 
 **Challenge:** #1 — Perimeter Leak  
-**Author:** Scott Piper  
-**Solvers:** 948  
 **Flag:** `WIZ_CTF_Presigned_Urls_Are_Everywhere`
 
 ---
