@@ -1,6 +1,6 @@
 # ADCS Attacks (ESC1–16)
 
-Active Directory Certificate Services issues the certificates that back smart-card logon, code signing, and PKINIT. A single misconfigured template or over-permissive CA turns any domain user into Domain Admin — and because certificates survive password resets, they're the gold standard for persistence. On the PNPT internal exam, if a CA is in scope, `certipy find -vulnerable` is one of the first things to run after you have creds.
+Active Directory Certificate Services issues the certificates that back smart-card logon, code signing, and PKINIT. A single misconfigured template or over-permissive CA can turn any domain user into Domain Admin, and certificates may remain useful after password resets. When a CA is in scope, `certipy find -vulnerable` is an important reconnaissance step after obtaining credentials.
 
 {% hint style="warning" %}
 Certificate auth is clock-sensitive like all Kerberos. If `certipy auth` fails with a skew error, `sudo ntpdate <DC_IP>` first. ESC16 detection needs Certipy v5.0.2+; `shadow auto` is broken on some v5 builds — pin `certipy-ad==4.8.2` for shadow credentials.

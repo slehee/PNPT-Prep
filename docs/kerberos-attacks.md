@@ -1,6 +1,6 @@
 # Kerberos Attacks
 
-Kerberos is Active Directory's authentication protocol, and almost every AD privilege-escalation path touches it. These attacks turn a single set of domain credentials into cracked service passwords, forged tickets, and Domain Admin. On the PNPT internal exam this is where footholds become full compromise — run them after [enumerating the domain](ad-attacks.md).
+Kerberos is Active Directory's authentication protocol, and almost every AD privilege-escalation path touches it. These attacks can turn a single set of domain credentials into cracked service passwords, forged tickets, and Domain Admin access. In internal assessments, this is often where a foothold becomes domain compromise; begin after [enumerating the domain](ad-attacks.md).
 
 {% hint style="warning" %}
 Kerberos is clock-sensitive. Tickets are rejected outside a 5-minute skew window with `KRB_AP_ERR_SKEW`. Before any ticket operation against a DC, sync time: `sudo ntpdate <DC_IP>` (or `sudo rdate -n <DC_IP>`).

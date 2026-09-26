@@ -31,4 +31,7 @@ __pycache__/
 .env
 .env.local
 
+# Local reference material
+cpts-cheatsheet-mirror/
+
 

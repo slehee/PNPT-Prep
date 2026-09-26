@@ -1,6 +1,6 @@
 # File Upload Attacks
 
-If you can upload a file the server will execute, you have RCE. The whole game is beating the validation between you and a web shell — and when execution is locked down, using the upload for path traversal, hash capture, or a client-side payload instead. On the PNPT web assessment, hit every upload endpoint you found during [Web Enumeration](web-enumeration.md): avatars, document uploads, import features, and file managers.
+If you can upload a file the server will execute, you have RCE. The goal is to understand and test the validation between you and a web shell; when execution is locked down, assess whether the upload enables path traversal, hash capture, or a client-side payload instead. During web assessments, test every in-scope upload endpoint found during [Web Enumeration](web-enumeration.md), including avatars, document uploads, import features, and file managers.
 
 {% hint style="warning" %}
 A shell that returns `id` proves execution. It does **not** finish the job. For the report, escalate to an interactive reverse shell as the web user, then show what it reaches (config secrets, other users, SSH). And loot `wp-config.php` / `.env` before you even drop a shell — reused DB creds open more doors than a webshell does.

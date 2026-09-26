@@ -1,6 +1,6 @@
 # Cross-Site Scripting (XSS)
 
-Injecting JavaScript that runs in another user's browser. Steals sessions, keys actions, defaces pages, and pivots to full account takeover. On the PNPT web assessment this is your highest-value client-side bug — find it after mapping inputs during [Web Enumeration](web-enumeration.md).
+Cross-site scripting injects JavaScript that runs in another user's browser. It can steal sessions, key actions, deface pages, and lead to account takeover. Test for it after mapping inputs during [Web Enumeration](web-enumeration.md).
 
 {% hint style="warning" %}
 `alert(1)` proves the bug exists. It does **not** prove impact. For the report, always escalate to session theft, an admin action performed as the victim, or credential capture. See [Prove impact](#prove-impact-dont-just-alert1).

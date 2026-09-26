@@ -1,6 +1,6 @@
 # Credential Dumping
 
-Once you land a shell with local admin or SYSTEM, credentials are the currency that moves you across the network. Every hash, ticket, and cleartext password you pull becomes a spray candidate for [Lateral Movement](lateral-movement.md). On the PNPT internal you dump early and dump often — the exam wants the domain, and the domain falls to reused credentials and a DCSync.
+Once you land a shell with local admin or SYSTEM, credentials are the currency that moves you across the network. Every hash, ticket, and cleartext password you pull becomes a candidate for authorized [Lateral Movement](lateral-movement.md). Domain compromise often relies on reused credentials or replication abuse such as DCSync.
 
 {% hint style="warning" %}
 Dumping LSASS, SAM, or NTDS.dit needs local **admin** at minimum, and `lsadump::sam` / live LSASS parsing need **SYSTEM**. If `mimikatz` errors on access, you skipped a privilege step — see [Windows privesc](windows-privesc-methodology.md) first.
@@ -125,7 +125,7 @@ type C:\Windows\System32\mimilsa.log
 ```
 
 {% hint style="danger" %}
-`memssp` is persistent until reboot and leaves `mimilsa.log` on disk — both are discoverable. Clean up: `Remove-Item C:\Windows\System32\mimilsa.log -Force` then reboot to unload the SSP. Note the residual artifact in your report if you can't reboot the exam target.
+`memssp` is persistent until reboot and leaves `mimilsa.log` on disk — both are discoverable. Clean up: `Remove-Item C:\Windows\System32\mimilsa.log -Force` then reboot to unload the SSP. Note the residual artifact in your report if you cannot reboot the target.
 {% endhint %}
 
 ## SAM / SYSTEM extraction

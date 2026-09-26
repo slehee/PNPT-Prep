@@ -1,14 +1,14 @@
-# Report Writing (PNPT Deliverable)
+# Report Writing
 
-The PNPT is not passed when you get Domain Admin — it's passed when you deliver a professional report **and** a live debrief. You get the 5-day practical, then extra time to write the report; miss the report or the debrief and the compromise counts for nothing. This page covers what to record while you're testing and how to turn it into a document a client would actually pay for.
+A penetration test is not complete when technical access is achieved. It is complete when the evidence, business impact, and remediation guidance are delivered in a professional report and stakeholder debrief. This page covers what to record while testing and how to turn it into a document a client can act on.
 
-{% hint style="danger" %}
-The PNPT has two graded deliverables most people forget until it's too late: a written report **and a ~15-minute video debrief** where you present findings as if to the client's stakeholders. Record notes and screenshots as if a non-technical exec and a patching engineer will both read them — because they will. Start the report on day one, not after the exam.
+{% hint style="info" %}
+Plan for two deliverables: a written report and a concise debrief for stakeholders. Record notes and screenshots for both non-technical decision-makers and the engineers responsible for remediation. Start the report on day one, not after testing ends.
 {% endhint %}
 
 ## The two audiences in one document
 
-Every finding you write serves two readers at once. Write for both or you lose points:
+Every finding serves two readers at once. Write for both audiences:
 
 | Audience | Reads | Wants |
 | --- | --- | --- |
@@ -17,7 +17,7 @@ Every finding you write serves two readers at once. Write for both or you lose p
 
 The debrief is aimed at the first group. The written report carries both.
 
-## Note-taking during the exam
+## Note-taking during the assessment
 
 ### Pick a portable, offline tool
 
@@ -43,7 +43,7 @@ Swap the version for the latest release off the GitHub releases page.
 Start every shell with `script` so every command and its output lands in a file. If notes crash or a shell dies, you still have the transcript.
 
 ```bash
-script -a ~/pnpt-exam.log
+script -a ~/pentest.log
 ```
 
 * `-a` — append, don't clobber the previous log
@@ -81,7 +81,7 @@ Rules of thumb:
 ### Folder layout
 
 ```
-pnpt-exam/
+pentest-engagement/
   ├── external/
   │    ├── nmap.png
   │    └── foothold.png
@@ -126,7 +126,7 @@ Screenshot the moment a payload works. Shells die, sessions drop, and you cannot
 
 ## Report structure
 
-A PNPT report generally runs in this order. Front-load the business story, back-load the raw evidence.
+A professional penetration test report generally follows this order. Front-load the business story and place raw evidence later.
 
 1. **Cover page** — client name, your name, engagement dates, "Confidential"
 2. **Executive summary** — non-technical, one page
@@ -207,7 +207,7 @@ Build vectors with the FIRST calculator and paste the full string so the client 
 CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H   → 9.8 Critical
 ```
 
-Vector cheatsheet for the common metrics:
+Vector reference for the common metrics:
 
 | Metric | Values | Ask yourself |
 | --- | --- | --- |
@@ -315,7 +315,7 @@ References
 
 ## Attack narrative
 
-Beyond individual findings, PNPT reports read well when you include a short **attack narrative** — the story of how you went from network access to Domain Admin, in order. It lets the reader see the chain instead of disconnected findings.
+Beyond individual findings, include a short **attack narrative** that explains how the assessment moved from initial network access to domain compromise. It lets the reader see the chain instead of a set of disconnected findings.
 
 ```
 1. Poisoned LLMNR to capture and crack jsmith's NTLMv2 hash.
@@ -337,9 +337,9 @@ Give the client a prioritized, deduplicated fix list up front so leadership can 
 * **Patch management** — bring hosts current, remediate the flagged CVEs
 * **Monitoring** — alert on LSASS access, Responder-style poisoning, and DCSync-pattern replication
 
-## PNPT evidence checklist
+## Assessment evidence checklist
 
-Before you submit, confirm the report contains:
+Before delivery, confirm the report contains:
 
 * [ ] Executive summary readable by a non-technical stakeholder
 * [ ] Every finding rated with severity **and** a full CVSS vector
@@ -371,13 +371,12 @@ Flag legend:
 
 Templates worth pre-downloading:
 
-* **SysReptor** — `pip install reptor`, produces exam-ready PDFs from findings
-* **noraj/OSCP-Exam-Report-Template-Markdown** — pandoc-based, adapts cleanly to PNPT
-* **TCM Security sample report** — matches the grader's expectations for structure and tone
+* **SysReptor** — `pip install reptor`, produces client-ready PDFs from findings
+* **TCM Security sample report** — a useful reference for structure and tone
 
 ## The debrief
 
-The PNPT debrief is a recorded presentation to imagined stakeholders. Score it like a real client meeting:
+A debrief presents the assessment results to stakeholders. Structure it like a client meeting:
 
 * **Lead with business impact**, not tooling. "We achieved full control of your Active Directory" beats "I ran Responder".
 * **Walk the attack narrative** as a story: how you got in, how you escalated, how far you got.

