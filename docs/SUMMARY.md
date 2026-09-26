@@ -63,9 +63,8 @@
 * [Tool List & Resources](tool-list-and-resources.md)
 * [WannaCry Case Study](wannacry.md)
 
-## Linux Privilege Escalation
+## Linux Practice Labs
 
-* [Linux PrivEsc](linux.md)
 * [UltraTech](ultratech.md)
 * [Lazy Admin](lazy-admin.md)
 * [Anonymous](anonymous.md)
