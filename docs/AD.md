@@ -131,11 +131,12 @@ The `.`(dot) represents the local machine. Used to log in with a local user acco
   * When the machine is not joined to a domain.
   * When the domain controller is down but you still have local admin access.
 
-!!! Note
+{% hint style="info" %}
 I had some issues with the SMB share from the server side.
 So In services.msc i have started `Function Discovery Resource Publication` and
 run in Powershell `Set-NetFirewallRule -DisplayGroup "Network Discovery" -Enabled True`
 `Set-NetConnectionProfile -NetworkCategory Private`
+{% endhint %}
 
 
 

@@ -23,17 +23,18 @@ references:
 
 # 🧱 CVE-2025-49844 — Redis Lua Use-After-Free (RCE)
 
-!!!danger 
-    "Critical RCE Vulnerability"
+{% hint style="danger" %}
+"Critical RCE Vulnerability"
 
-    A **Use-After-Free vulnerability** was discovered in the **Redis Lua scripting engine**, allowing potential **remote code execution (RCE)**.
-    This impacts all Redis releases that include Lua scripting functionality.
+A **Use-After-Free vulnerability** was discovered in the **Redis Lua scripting engine**, allowing potential **remote code execution (RCE)**.
+This impacts all Redis releases that include Lua scripting functionality.
 
-    **CVSS:** 10.0 (Critical)  
-    **CVE:** [CVE-2025-49844](https://nvd.nist.gov/vuln/detail/CVE-2025-49844)  
-    **Component:** Redis Lua scripting engine  
-    **Disclosure Date:** January 2025  
-    **Upstream Fix:** [redis/redis on GitHub](https://github.com/redis/redis)
+**CVSS:** 10.0 (Critical)  
+**CVE:** [CVE-2025-49844](https://nvd.nist.gov/vuln/detail/CVE-2025-49844)  
+**Component:** Redis Lua scripting engine  
+**Disclosure Date:** January 2025  
+**Upstream Fix:** [redis/redis on GitHub](https://github.com/redis/redis)
+{% endhint %}
 
 
 ## 🚨 Impacted Releases
@@ -61,35 +62,41 @@ references:
 
 ## 🧮 Versioning Explained
 
-!!! note "Redis Versioning Scheme"
-    Redis OSS uses **semantic versioning**:
-    ```
-    Major.Minor.Patch
-    Example: 7.2.11 → Major 7, Minor 2, Patch 11
-    ```
-    Each minor line (e.g., `7.2.x`, `7.4.x`, `8.0.x`) receives **backported patches** independently.
-    The phrase **“and above”** means *all subsequent patch versions within the same maintenance branch* —  
-    not necessarily all future major releases.
-    
-    Each Redis branch is a maintenance line, such as 7.22.x, 7.23.x, 7.8.x, etc.
+{% hint style="info" %}
+**Redis Versioning Scheme**
 
-    When Redis says a fix applies to “7.22.2-12 and above,” it means:
+Redis OSS uses **semantic versioning**:
+```
+Major.Minor.Patch
+Example: 7.2.11 → Major 7, Minor 2, Patch 11
+```
+Each minor line (e.g., `7.2.x`, `7.4.x`, `8.0.x`) receives **backported patches** independently.
+The phrase **“and above”** means *all subsequent patch versions within the same maintenance branch* —  
+not necessarily all future major releases.
 
-    ✅ All newer builds and patches within the 7.22 branch (for example 7.22.2-13, 7.22.3-100, etc.) will include that fix.
+Each Redis branch is a maintenance line, such as 7.22.x, 7.23.x, 7.8.x, etc.
 
-    🟨 Newer Enterprise branches (like 7.23.x) will probably have it — but you must verify in the release notes, because each branch is developed and tested separately.
+When Redis says a fix applies to “7.22.2-12 and above,” it means:
 
-    ❌ Future major versions (like 8.x.x) are not automatically guaranteed to include that same fix unless Redis confirms it in their changelog.
+✅ All newer builds and patches within the 7.22 branch (for example 7.22.2-13, 7.22.3-100, etc.) will include that fix.
 
-!!! tip "Enterprise Versioning (Compound Scheme)"
-    Redis Enterprise (Software) versions use:
-    ```
-    Major.Minor.Patch-Build
-    Example: 7.22.2-12
-    ```
-    - `7.22.2` → Enterprise base version  
-    - `-12` → internal build iteration or hotfix  
-    - These internal builds reflect Redis Ltd.’s commercial patch cycles.
+🟨 Newer Enterprise branches (like 7.23.x) will probably have it — but you must verify in the release notes, because each branch is developed and tested separately.
+
+❌ Future major versions (like 8.x.x) are not automatically guaranteed to include that same fix unless Redis confirms it in their changelog.
+{% endhint %}
+
+{% hint style="success" %}
+**Enterprise Versioning (Compound Scheme)**
+
+Redis Enterprise (Software) versions use:
+```
+Major.Minor.Patch-Build
+Example: 7.22.2-12
+```
+- `7.22.2` → Enterprise base version  
+- `-12` → internal build iteration or hotfix  
+- These internal builds reflect Redis Ltd.’s commercial patch cycles.
+{% endhint %}
 
 ---
 
@@ -115,10 +122,13 @@ references:
 
 ---
 
-!!! info "Key Takeaways"
-    - Redis uses **Major.Minor.Patch** for OSS and **Major.Minor.Patch-Build** for Enterprise.  
-    - The **dash (-)** indicates an **internal build number** for Enterprise releases.  
-    - “**and above**” means *subsequent patch builds within that same maintenance line*,  
-      not all future major versions automatically include the fix.
+{% hint style="info" %}
+**Key Takeaways**
+
+- Redis uses **Major.Minor.Patch** for OSS and **Major.Minor.Patch-Build** for Enterprise.  
+- The **dash (-)** indicates an **internal build number** for Enterprise releases.  
+- “**and above**” means *subsequent patch builds within that same maintenance line*,  
+  not all future major versions automatically include the fix.
+{% endhint %}
 
 [Redis Enterprise Software product lifecycle](https://redis.io/docs/latest/operate/rs/installing-upgrading/product-lifecycle/)

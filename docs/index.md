@@ -1,72 +1,16 @@
-# 📖 Linux Privilege Escalation Docs
+# Security Engineering Notes
 
-Welcome to the **Linux Privilege Escalation Documentation**, powered by **MkDocs**.
+Hands-on notes from my PNPT preparation, malware analysis practice, Linux privilege escalation labs, and cloud security CTFs. Everything here was written while learning, so expect commands you can copy and the reasoning behind them.
 
-This project provides:
-- A structured **knowledge base** for Linux privilege escalation techniques.
-- A repository of **scripts and tools** for enumeration and exploitation.
-- A **self-hosted MkDocs site** in Docker for quick access and search.
+## What's inside
 
-For full MkDocs documentation, visit **[mkdocs.org](https://www.mkdocs.org)**.
+* **Penetration Testing.** The PNPT methodology from recon to reporting, plus an Active Directory attack chain.
+* **Malware Analysis.** Static and dynamic triage, the tools I use, and a WannaCry case study.
+* **Linux Privilege Escalation.** Core techniques and walkthroughs of practice machines.
+* **Cloud Security Championship.** Writeups of the Wiz CTF challenges.
+* **Adversary Emulation.** Setting up Caldera.
+* **OpSec & CVE Intel.** Operational security notes and a critical CVE breakdown.
 
----
-
-## 🛠️ MkDocs Quick Commands
-Use the following commands to manage the documentation:
-
-| Command | Description |
-|---------|------------|
-| `mkdocs new [dir-name]` | Create a new MkDocs project. |
-| `mkdocs serve` | Start a live-reloading development server. |
-| `mkdocs build` | Generate a static site in the `site/` directory. |
-| `mkdocs -h` | Show help and options. |
-
-To serve the MkDocs site locally, run:
-```sh
-mkdocs serve
-
-
-
-📌 Cloning the Repository
-
-To get started with this project:
-
-git clone https://github.com/slehee/Linux-PrivEsc.git
-cd Linux-PrivEsc
-
-📌 Making Changes
-
-    Create a new branch:
-
-git checkout -b feature-update
-
-Make your changes, then commit:
-
-git add .
-git commit -m "Updated documentation"
-
-Push to GitHub:
-
-    git push origin feature-update
-
-    Open a Pull Request (PR) in GitHub.
-
-🐳 Running MkDocs in Docker
-
-If you prefer using Docker, you can run the MkDocs server inside a container:
-
-`docker-compose up --build`
-
-or manually:
-
-cd Linux-PrivEsc
-
-   
-`docker build -t linux-privesc-docs -f Docker/Dockerfile .`
-
-
-
-
-`docker run -d -p 8000:8000 linux-privesc-docs`
-
-Then, visit http://localhost:8000.
+{% hint style="warning" %}
+Everything here is for legal, authorized practice: labs, CTFs, and systems you own or have written permission to test.
+{% endhint %}

@@ -43,7 +43,7 @@ Usually takes 16-40 hours depending on the task, w/ 4-8 hours for report writing
 ##### Social Engineering
 *The weakest element in an organization's security is the human element*!
 
-Social engineering is using manipulation to gain access to or gather restricted information on a target. A common example of a social engineering tactic is [phishing](phishing.md).
+Social engineering is using manipulation to gain access to or gather restricted information on a target. A common example of a social engineering tactic is phishing.
 
 Social engineering and physical pentesting tend to go hand in hand. 
 ### Other Assessments:
@@ -70,8 +70,9 @@ You should be prepared to give a technical *and* high-level explanation of your 
 
 The Debrief also allows the client to ask questions about or challenge your findings before a final report is written (the initial report is always a *draft*).
 
-!!! Note
-    [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+{% hint style="info" %}
+[OWASP Top 10](https://owasp.org/www-project-top-ten/)
+{% endhint %}
 
 
 
