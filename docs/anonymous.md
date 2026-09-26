@@ -121,10 +121,10 @@ cat /root/root.txt
 
 ```
 
-Summary & Lessons Learned
+## Summary & Lessons Learned
 
-✅ Writable FTP script (clean.sh) allowed initial access.
-✅ Cron job execution triggered the reverse shell.
-✅ Privilege escalation achieved via /usr/bin/env SUID.
-✅ Root access obtained & flag captured.
+- Writable FTP script (`clean.sh`) allowed initial access.
+- Cron job execution triggered the reverse shell.
+- Privilege escalation achieved via `/usr/bin/env` SUID.
+- Root access obtained and flag captured.
 

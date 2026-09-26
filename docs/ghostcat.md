@@ -169,5 +169,5 @@ We now have **root access** on the machine!
 - **SSH private key cracking** helped us switch to `merlin`.
 - **Exploiting Sudo permissions on zip** provided **root access**.
 
-**Rooted the box successfully! 🎉**
+**Rooted the box successfully!**
 

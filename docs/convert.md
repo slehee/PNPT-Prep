@@ -103,7 +103,7 @@ chmod 777 /tmp/clean.sh
 ```bash
 nc -lvnp 9091
 ```
-Once `clean.sh` executes, we receive a **root shell**! 🎉
+Once `clean.sh` executes, we receive a **root shell**!
 
 ## **5. Summary**
 - **Recon:** Found open ports and sensitive directories.
@@ -112,5 +112,5 @@ Once `clean.sh` executes, we receive a **root shell**! 🎉
 - **Privilege Escalation:** Found and exploited a cron job running as root.
 - **Root Access:** Replaced `clean.sh` with a reverse shell and gained full control.
 
-🚀 **Challenge Complete!**
+**Challenge Complete!**
 

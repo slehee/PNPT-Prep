@@ -206,13 +206,13 @@ Runner_20260201-200609-utc.log
 
 ### What We Know for Certain
 
-- ✅ The compromised machine is a GitHub Actions self-hosted runner
-- ✅ The attack is a supply chain attack (confirmed by hint)
-- ✅ Kubernetes secrets were exfiltrated and Fernet-encrypted into 241 `.secret` files
-- ✅ The `cryptography` package (which provides Fernet) IS installed on the machine (v3.4.8)
-- ✅ The source code in the repo is completely clean
-- ✅ We have interactive shell access to the machine via the challenge terminal
-- ✅ Runner diagnostic logs exist and are readable
+- The compromised machine is a GitHub Actions self-hosted runner
+- The attack is a supply chain attack (confirmed by hint)
+- Kubernetes secrets were exfiltrated and Fernet-encrypted into 241 `.secret` files
+- The `cryptography` package (which provides Fernet) IS installed on the machine (v3.4.8)
+- The source code in the repo is completely clean
+- We have interactive shell access to the machine via the challenge terminal
+- Runner diagnostic logs exist and are readable
 
 ---
 
@@ -384,7 +384,7 @@ print(decrypted.decode())
 
 ---
 
-## 🏆 Flag
+## Flag
 
 ```
 CTF{supply_chain_by_M@G!C_St3a1ER}

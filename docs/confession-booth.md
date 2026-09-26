@@ -64,7 +64,7 @@ const (
 )
 ```
 
-⚠️ **Red flag:** Admin permission is `0`, which is the default zero-value for a Go `int`.
+**Red flag:** Admin permission is `0`, which is the default zero-value for a Go `int`.
 
 ---
 
@@ -81,7 +81,7 @@ CREATE TABLE users (
 );
 ```
 
-⚠️ **Red flag:** `permission_level` has **no DEFAULT**. New rows get `NULL` until explicitly set.
+**Red flag:** `permission_level` has **no DEFAULT**. New rows get `NULL` until explicitly set.
 
 ---
 
@@ -108,7 +108,7 @@ func RegisterHandler(c echo.Context) error {
 }
 ```
 
-⚠️ **Critical:** Two **non-atomic** database operations. A gap exists between them.
+**Critical:** Two **non-atomic** database operations. A gap exists between them.
 
 ---
 
@@ -131,7 +131,7 @@ func LoginHandler(c echo.Context) error {
 }
 ```
 
-⚠️ **Critical:** When `permission_level` is `NULL` in the database, scanning into a Go `int` gives `0` (the zero-value) — which equals `PermissionAdmin`!
+**Critical:** When `permission_level` is `NULL` in the database, scanning into a Go `int` gives `0` (the zero-value) — which equals `PermissionAdmin`!
 
 ---
 

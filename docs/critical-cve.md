@@ -21,7 +21,7 @@ references:
   - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-whats-new
 ---
 
-# 🧱 CVE-2025-49844 — Redis Lua Use-After-Free (RCE)
+# CVE-2025-49844 — Redis Lua Use-After-Free (RCE)
 
 {% hint style="danger" %}
 "Critical RCE Vulnerability"
@@ -37,7 +37,7 @@ This impacts all Redis releases that include Lua scripting functionality.
 {% endhint %}
 
 
-## 🚨 Impacted Releases
+## Impacted Releases
 
 | Edition | Impacted Versions |
 |----------|------------------|
@@ -46,7 +46,7 @@ This impacts all Redis releases that include Lua scripting functionality.
 
 ---
 
-## ✅ Fixed Releases
+## Fixed Releases
 
 | Edition | Fixed Version(s) |
 |----------|------------------|
@@ -60,7 +60,7 @@ This impacts all Redis releases that include Lua scripting functionality.
 
 ---
 
-## 🧮 Versioning Explained
+## Versioning Explained
 
 {% hint style="info" %}
 **Redis Versioning Scheme**
@@ -78,11 +78,11 @@ Each Redis branch is a maintenance line, such as 7.22.x, 7.23.x, 7.8.x, etc.
 
 When Redis says a fix applies to “7.22.2-12 and above,” it means:
 
-✅ All newer builds and patches within the 7.22 branch (for example 7.22.2-13, 7.22.3-100, etc.) will include that fix.
+**Guaranteed.** All newer builds and patches within the 7.22 branch (for example 7.22.2-13, 7.22.3-100, etc.) will include that fix.
 
-🟨 Newer Enterprise branches (like 7.23.x) will probably have it — but you must verify in the release notes, because each branch is developed and tested separately.
+**Verify first.** Newer Enterprise branches (like 7.23.x) will probably have it — but you must verify in the release notes, because each branch is developed and tested separately.
 
-❌ Future major versions (like 8.x.x) are not automatically guaranteed to include that same fix unless Redis confirms it in their changelog.
+**Not guaranteed.** Future major versions (like 8.x.x) are not automatically guaranteed to include that same fix unless Redis confirms it in their changelog.
 {% endhint %}
 
 {% hint style="success" %}
@@ -100,18 +100,18 @@ Example: 7.22.2-12
 
 ---
 
-## ☁️ Integrated and Managed Versions
+## Integrated and Managed Versions
 
 | Integration | Description | Affected? | Notes |
 |--------------|--------------|-----------|-------|
-| **Azure Redis / Azure Redis Database** | Microsoft-managed Redis service (based on OSS Redis) | 🟨 Potentially, vendor-managed | Microsoft backports critical fixes automatically. See [Azure Cache for Redis – What’s New](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-whats-new). |
-| **Lettuce Redis Client** | Java client library for Redis | ❌ Should Not be affected | [Client-side only](https://redis.io/docs/latest/develop/clients/lettuce/?utm_source=chatgpt.com), no embedded Lua execution. |
-| **Redis Insight** | Redis management GUI | ❌ Should Not be affected  | Does not run Redis internally. |
-| **Redis on Windows / Redis OSS** | Self-hosted Redis binaries | ✅ Affected if below fixed versions | Upgrade to latest patched release from [Redis GitHub](https://github.com/redis/redis/releases). |
+| **Azure Redis / Azure Redis Database** | Microsoft-managed Redis service (based on OSS Redis) | Potentially, vendor-managed | Microsoft backports critical fixes automatically. See [Azure Cache for Redis – What’s New](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-whats-new). |
+| **Lettuce Redis Client** | Java client library for Redis | Should Not be affected | [Client-side only](https://redis.io/docs/latest/develop/clients/lettuce/?utm_source=chatgpt.com), no embedded Lua execution. |
+| **Redis Insight** | Redis management GUI | Should Not be affected | Does not run Redis internally. |
+| **Redis on Windows / Redis OSS** | Self-hosted Redis binaries | Affected if below fixed versions | Upgrade to latest patched release from [Redis GitHub](https://github.com/redis/redis/releases). |
 
 ---
 
-## 🧾 Summary
+## Summary
 
 - **Affected:** All Redis servers (OSS/Enterprise/Stack) with Lua scripting enabled  
 - **Not affected:** Client libraries (e.g., Lettuce, Jedis), management tools (Redis Insight)  

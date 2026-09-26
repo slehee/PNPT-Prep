@@ -1,6 +1,6 @@
-# 🚀 Caldera Docker Installation & Usage Guide
+# Caldera Docker Installation & Usage Guide
 
-## 🐳 Docker Installation
+## Docker Installation
 
 ### Local Build
 
@@ -26,7 +26,7 @@ docker run -p 8888:8888 ghcr.io/mitre/caldera:latest
 
 ---
 
-## 🛑 Graceful Container Shutdown
+## Graceful Container Shutdown
 
 1. Find the container ID for your running Caldera container:
 	```bash
@@ -39,14 +39,14 @@ docker run -p 8888:8888 ghcr.io/mitre/caldera:latest
 
 ---
 
-## 🏷️ Caldera Docker Variants
+## Caldera Docker Variants
 
 - **full**: Includes all files, suitable for offline operation.
 - **slim**: Excludes files for the emu and atomic plugins (downloaded on-demand if enabled). Slim images on GHCR are prefixed with `slim`.
 
 ---
 
-## 📦 Docker Container Notes
+## Docker Container Notes
 
 - The Caldera container auto-generates keys, usernames, and passwords on first start.
 - To override the default config or avoid auto-generated credentials, bind-mount your own config file:
@@ -66,7 +66,7 @@ docker run -p 8888:8888 ghcr.io/mitre/caldera:latest
 
 ---
 
-## 🖥️ User Interface Development
+## User Interface Development
 
 If you plan to develop the Caldera UI, follow these additional steps:
 
@@ -93,7 +93,7 @@ If you plan to develop the Caldera UI, follow these additional steps:
 
 ---
 
-## 🗄️ Creating Persistent Config & Data Before First Run
+## Creating Persistent Config & Data Before First Run
 
 If you want stable credentials and encryption keys from the start, set up persistent folders and configuration before running Caldera for the first time.
 
@@ -156,7 +156,7 @@ You can now edit `~/caldera-persist/config/local.yml` to set fixed credentials, 
 
 ---
 
-## 🔑 Caldera Secrets Explained
+## Caldera Secrets Explained
 
 - **UI passwords (users):**
   - These are what you type into the web UI to log in (e.g., `admin`, `red`, `blue`).

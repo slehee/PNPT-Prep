@@ -154,7 +154,7 @@ The request flow:
 1. Our machine generates the presigned URL using stolen IAM credentials
 2. We send the presigned URL to the Spring Boot `/proxy` endpoint
 3. The proxy (running on the VPC EC2 instance) makes the S3 request from inside the VPC
-4. S3 validates: ✅ presigned URL signature is valid, ✅ request originates from within the VPC
+4. S3 validates two things: the presigned URL signature, and that the request originates from within the VPC
 5. Flag is returned in the response
 
 ---
