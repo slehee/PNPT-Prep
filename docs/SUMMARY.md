@@ -36,12 +36,3 @@
 * [Happy Birthday](happy-birthday.md)
 * [Perimeter Leak](perimeter-leak.md)
 * [Split Horizon](split-horizon.md)
-
-## Adversary Emulation
-
-* [Setting up Caldera](setup-caldera.md)
-
-## OpSec & CVE Intel
-
-* [OpSec](opsec.md)
-* [Critical CVE: Redis Lua RCE](critical-cve.md)

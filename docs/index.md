@@ -8,8 +8,6 @@ Hands-on notes from my PNPT preparation, malware analysis practice, Linux privil
 * **Malware Analysis.** Static and dynamic triage, the tools I use, and a WannaCry case study.
 * **Linux Privilege Escalation.** Core techniques and walkthroughs of practice machines.
 * **Cloud Security Championship.** Writeups of the Wiz CTF challenges.
-* **Adversary Emulation.** Setting up Caldera.
-* **OpSec & CVE Intel.** Operational security notes and a critical CVE breakdown.
 
 {% hint style="warning" %}
 Everything here is for legal, authorized practice: labs, CTFs, and systems you own or have written permission to test.
