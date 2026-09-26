@@ -1,6 +1,6 @@
 # Relay & Coerce
 
-Capture an authentication attempt, then redirect it to a service you control — bypassing the need for a password entirely. On the PNPT internal network this is one of the fastest paths from "no creds" to a foothold, and from a foothold to Domain Admin. It chains straight out of [Responder poisoning](#responder--llmnrnbt-ns-poisoning) and feeds directly into [Credential Dumping](credential-dumping.md) and [Lateral Movement](lateral-movement.md).
+Capture an authentication attempt, then redirect it to a service you control, bypassing the need for a password. On internal networks, relay and coercion attacks can provide a fast path from unauthenticated access to a foothold or domain compromise. They chain from [Responder poisoning](#responder--llmnrnbt-ns-poisoning) and feed directly into [Credential Dumping](credential-dumping.md) and [Lateral Movement](lateral-movement.md).
 
 {% hint style="warning" %}
 Relay only works against targets where signing is **not required**. Generate a relay list first (`nxc smb <TARGET>/24 --gen-relay-list`) — burning time relaying to a signed host produces nothing. See the [SMB/LDAP signing matrix](#smb--ldap-signing-status).
@@ -146,7 +146,7 @@ nxc smb <TARGET>/24 -u <USER> -p <PASS> -M coerce_plus -o METHOD=PrinterBug
 
 ### MS-EFSR (PetitPotam)
 
-PetitPotam abuses the EFSRPC interface — historically triggerable **unauthenticated** against unpatched DCs, which makes it a classic no-creds foothold on the exam.
+PetitPotam abuses the EFSRPC interface and was historically triggerable **unauthenticated** against unpatched DCs, making it a powerful no-credentials coercion technique.
 
 ```bash
 # Unauthenticated (older DCs)

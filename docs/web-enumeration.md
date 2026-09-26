@@ -7,7 +7,7 @@ Work outside-in: passive OSINT (no packets to the target) → active discovery (
 {% endhint %}
 
 {% hint style="warning" %}
-Stay in scope. Passive OSINT against public services is safe, but active brute-forcing, vhost fuzzing, and scanning must stay inside the engagement's authorized targets. On the exam, LLMs are banned during the test and the report window — use them only while practising.
+Stay in scope. Passive OSINT against public services is generally low impact, but active brute-forcing, vhost fuzzing, and scanning must stay inside the engagement's authorized targets.
 {% endhint %}
 
 ---
@@ -123,6 +123,7 @@ linkedin2username -c "<COMPANY_NAME>"                       # org username list
 | HaveIBeenPwned | `https://haveibeenpwned.com/` | Check breached emails |
 | Grayhat Warfare | `https://grayhatwarfare.com/` | Exposed cloud buckets |
 | Hunter.io | `https://hunter.io/` | Email format for a domain |
+| [OSINT Industries](https://app.osint.industries/) | `https://app.osint.industries/` | Pivot across authorized phone, email, username, name, wallet, IP, domain, and image searches |
 
 **Common email formats** to build a username list from a single known name:
 
@@ -618,7 +619,7 @@ gobuster dir -u http://<TARGET>/ -w /tmp/list.txt -x .aspx,.asp
 
 ### WAF / localhost-only API bypass via headers
 
-Half the "protected" internal APIs on exam boxes are gated by one client-controlled header. Rotate these before assuming the endpoint is truly locked.
+Many poorly protected internal APIs are gated by one client-controlled header. Test these variations before concluding that an authorized endpoint is inaccessible.
 
 ```bash
 for h in "X-Forwarded-For: 127.0.0.1" "X-Real-IP: 127.0.0.1" "X-Client-IP: 127.0.0.1" \

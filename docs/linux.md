@@ -13,9 +13,6 @@ Privilege escalation is all about:
 
 [Got Milk](https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/)
 
-[Sushant](https://sushant747.gitbooks.io/total-oscp-guide/content/privilege_escalation_-_linux.html)
-
-
 ## Automated Tools:
 * [LinPeas](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS)
 * [LinEnum](https://github.com/rebootuser/LinEnum)

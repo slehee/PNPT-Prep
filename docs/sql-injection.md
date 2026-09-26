@@ -1,6 +1,6 @@
 # SQL Injection
 
-Injecting SQL into a query the app builds from your input. Reads and rewrites the database, dumps credential hashes, reads and writes files on the host, and on many engines runs OS commands. On the PNPT web assessment this is your highest-value server-side data bug — hunt it wherever a parameter reaches a query, which you mapped during [Web Enumeration](web-enumeration.md).
+SQL injection places attacker-controlled input into a query built by the application. It can read or rewrite the database, dump credential hashes, access files on the host, and, on many engines, run OS commands. In web assessments, test for it wherever a parameter reaches a query identified during [Web Enumeration](web-enumeration.md).
 
 {% hint style="warning" %}
 `' OR 1=1-- -` proves the input is injectable. It does **not** prove impact. For the report, escalate to a credential dump you cracked, file read/write, or command execution on the host. A login bypass alone gets a low rating; a domain foothold gets a high one.
@@ -165,7 +165,7 @@ sqlmap -u "http://<TARGET>/page?id=1" --os-shell --batch
 ```
 
 {% hint style="warning" %}
-Confirm the injection by hand before firing sqlmap, and mind exam tool rules — automated exploitation with `--os-shell` may count against restricted-tool limits. Everything above works manually: error-based `extractvalue()` and time-based `SLEEP` are your no-scanner fallbacks.
+Confirm the injection manually before using sqlmap. Manual techniques such as error-based `extractvalue()` and time-based `SLEEP` make the evidence easier to understand and reproduce, while automation can then confirm breadth and impact.
 {% endhint %}
 
 ## Weaponize — file read, file write, code execution
@@ -414,7 +414,7 @@ curl -s -x http://<TARGET>:3128 "http://127.0.0.1:<PORT>/shell.php?cmd=whoami"
 #      no output, no errors -> boolean, then time-based
 # 5. Dump credentials, crack offline, and escalate to file R/W or OS commands
 burpsuite      # intercept, repeat, tune payloads
-sqlmap         # automate once you know where it bites (unless banned)
+sqlmap         # automate once you understand the injection point
 hashcat        # crack the dumped hashes
 ```
 

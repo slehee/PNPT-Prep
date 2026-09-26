@@ -6,10 +6,6 @@ This is step one of the engagement. Before a single exploit fires, you map what'
 Enumeration is not a one-shot scan. It's a loop: discover hosts → scan ports → identify services/versions → enumerate each service → feed findings back into more scans. When you land creds or an internal foothold, **re-run everything with those creds** — a credentialed view surfaces patch levels, configs, and shares an external scan never sees.
 {% endhint %}
 
-{% hint style="info" %}
-**Exam note:** Nessus / OpenVAS are banned — use `nmap` NSE, `searchsploit`, and manual research instead. Metasploit's `db_` workspace counts against your one-target Metasploit allowance if you run modules from it.
-{% endhint %}
-
 ## The workflow at a glance
 
 | Phase | Goal | Primary tools |
@@ -1190,7 +1186,7 @@ cat web_discovery.xml | aquatone -nmap -out aquatone_report
 
 ## AutoRecon — Orchestrated Multi-Tool Enumeration
 
-For long single-target boxes where you want automated per-service surveying while you focus. Wraps only exam-legal primitives (nmap NSE, feroxbuster, enum4linux, smbmap, nikto, snmpwalk) — no banned scanners.
+For long single-target assessments where you want automated per-service surveying while you focus. It wraps common discovery tools such as nmap NSE, feroxbuster, enum4linux, smbmap, nikto, and snmpwalk.
 
 ```bash
 pipx install git+https://github.com/Tib3rius/AutoRecon.git

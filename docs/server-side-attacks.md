@@ -1,6 +1,6 @@
 # Server-Side Attacks (SSRF / XXE / SSTI)
 
-When your input reaches the *server's* parser, HTTP client, or template engine — not another user's browser — you're in server-side territory. These bugs read local files, reach services the internet can't, and land remote code execution. On the PNPT exam they're the bridge from a web foothold to the internal network and to shells. Map the inputs first during [Web Enumeration](web-enumeration.md), then decide which class each parameter belongs to.
+When your input reaches the *server's* parser, HTTP client, or template engine rather than another user's browser, you are in server-side territory. These bugs can read local files, reach services the internet cannot, and lead to remote code execution. In penetration tests, they often bridge a web foothold to internal network access and shells. Map the inputs first during [Web Enumeration](web-enumeration.md), then decide which class each parameter belongs to.
 
 {% hint style="warning" %}
 Server-side bugs escalate fast. SSRF becomes cloud-credential theft, XXE becomes source-code and password-hash disclosure, SSTI becomes RCE. Don't stop at the proof (`{{7*7}}` → `49`). For the report, chain it to the file you read, the internal host you reached, or the shell you caught.
@@ -248,14 +248,14 @@ $run
 ```
 
 {% hint style="info" %}
-`tplmap` automates detection and exploitation across most engines: `tplmap -u 'http://<TARGET>/page?name=*'` then `--os-shell`. Use it to confirm, but understand the manual payloads above — the exam wants you to show the mechanism.
+`tplmap` automates detection and exploitation across most engines: `tplmap -u 'http://<TARGET>/page?name=*'` then `--os-shell`. Use it to confirm findings, but understand and document the mechanism with the manual payloads above.
 {% endhint %}
 
 ---
 
 ## Real-world server-side chains worth memorizing
 
-These recur on exam-style boxes. Each is a full chain, not a one-liner probe.
+These patterns recur in labs and real assessments. Each is a full chain, not a one-line probe.
 
 ### WordPress XXE via WAV upload (CVE-2021-29447)
 

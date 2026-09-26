@@ -116,7 +116,7 @@ hashcat -r demo.rule --stdout demo.txt
 # iloveyou1
 ```
 
-Rule cheatsheet: `$X` append, `^X` prepend, `c` capitalize, `l`/`u` lower/upper, `T0` toggle-case at position 0, `d` duplicate, `r` reverse, `sab` replace all `a` with `b`.
+Rule reference: `$X` append, `^X` prepend, `c` capitalize, `l`/`u` lower/upper, `T0` toggle-case at position 0, `d` duplicate, `r` reverse, `sab` replace all `a` with `b`.
 
 ### Show Cracked Passwords
 

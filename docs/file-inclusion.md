@@ -1,6 +1,6 @@
 # File Inclusion (LFI / RFI)
 
-The app builds a file path or an `include()` target from your input. Point it at files it shouldn't serve to read source and secrets (LFI), or at a remote file you control to run your code (RFI). On the PNPT web assessment this is a top source-disclosure-to-RCE chain — hunt any parameter that looks like it names a file (`page`, `file`, `include`, `template`, `view`, `path`, `load`), which you flagged during [Web Enumeration](web-enumeration.md).
+The app builds a file path or an `include()` target from your input. Point it at files it should not serve to read source and secrets (LFI), or at a remote file you control to run code (RFI). This is a high-impact source-disclosure-to-RCE chain; test any parameter that appears to name a file (`page`, `file`, `include`, `template`, `view`, `path`, `load`) after identifying it during [Web Enumeration](web-enumeration.md).
 
 {% hint style="warning" %}
 Reading `/etc/passwd` proves traversal. It does **not** prove much impact on its own. For the report, escalate to source/credential disclosure you reused, or to a shell via log poisoning, a PHP wrapper, or RFI. The `passwd` read is the bug; the config secret or the shell is the finding.

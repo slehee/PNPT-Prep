@@ -1,6 +1,6 @@
 # Mimikatz
 
-The definitive Windows credential-extraction tool. Once you land an admin shell on the PNPT internal exam, Mimikatz turns that access into plaintext passwords, NTLM hashes, Kerberos tickets, and — on a Domain Controller — the keys to the whole domain. Run it in memory where you can; drop the binary only when you must.
+Mimikatz is a Windows credential-extraction tool. Once you land an administrative shell on an internal network, it can turn that access into plaintext passwords, NTLM hashes, Kerberos tickets, and, on a Domain Controller, the keys to the whole domain. Run it in memory where you can; drop the binary only when necessary.
 
 {% hint style="danger" %}
 Mimikatz needs local admin + `SeDebugPrivilege` to read LSASS, and modern Defender flags the binary on sight. Prefer reflective PowerShell loading (`Invoke-Mimikatz`), an LSASS minidump you parse offline with `pypykatz`, or NetExec's `-M lsassy`. Reserve the raw `.exe` for hosts where you've confirmed AV is off.
@@ -183,7 +183,7 @@ misc::skeleton
 
 ## DCSync — domain hashes without touching the DC
 
-Ask a DC to replicate account secrets, using DCSync rights (Domain Admins, Enterprise Admins, or a delegated account). This is the usual "prove Domain Admin" moment on the exam.
+Ask a DC to replicate account secrets using DCSync rights held by Domain Admins, Enterprise Admins, or a delegated account. Successful replication demonstrates the impact of those privileges.
 
 ```powershell
 mimikatz # lsadump::dcsync /user:<DOMAIN>\krbtgt      # grab krbtgt for Golden Tickets

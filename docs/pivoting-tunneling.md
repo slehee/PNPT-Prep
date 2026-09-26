@@ -1,6 +1,6 @@
 # Pivoting & Tunneling
 
-After the first foothold you're rarely on the target network directly. Pivoting routes your tools *through* the compromised host to reach machines you otherwise can't touch. The PNPT internal expects you to reach a second, hidden subnet from your foothold — this is how you get there and how you keep [Lateral Movement](lateral-movement.md) tools working across the boundary.
+After the first foothold, you may not have direct access to every in-scope network. Pivoting routes your tools *through* the compromised host to reach authorized systems on another segment while keeping [Lateral Movement](lateral-movement.md) tools working across the boundary.
 
 {% hint style="warning" %}
 Through a SOCKS proxy, use **TCP connect** scans only (`nmap -sT -Pn`). SYN (`-sS`), UDP, and ICMP scans send half-packets or raw frames that SOCKS can't relay — they fail silently. `-Pn` is mandatory because host discovery pings get dropped too.
@@ -123,7 +123,7 @@ ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5 -N -D 9050 user@pivot
 
 ## Chisel — SOCKS over HTTP (upload one binary)
 
-When there's no SSH, chisel tunnels over HTTP and is the PNPT favorite. **Reverse mode** (server on your attacker box) works even when the pivot is behind NAT.
+When SSH is unavailable, Chisel provides reliable tunnels over HTTP. **Reverse mode** (server on your attacker box) works even when the pivot is behind NAT.
 
 ```bash
 # Attacker (server)

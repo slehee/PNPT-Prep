@@ -194,7 +194,7 @@ C:\Users\<user>\AppData\Local\Microsoft\Windows\INetCache\IE\<subdir>
 C:\Windows\ServiceProfiles\LocalService\AppData\Local\Temp\
 ```
 
-## Method-selection cheat sheet
+## Method-selection reference
 
 | Situation | Reach for |
 | --- | --- |

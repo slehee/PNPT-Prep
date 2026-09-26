@@ -1,6 +1,6 @@
 # Active Directory Attacks
 
-The PNPT internal exam lives in Active Directory. You start unauthenticated on the network and finish as Domain Admin (or Enterprise Admin) — and the path is almost always the same shape: **get a foothold → enumerate everything → find a misconfiguration → escalate → own the domain**. This page is the map of that chain. It links out to the deep-dive pages for each technique; read [Active Directory](AD.md) first for the concepts (forests, domains, trusts, tickets).
+Active Directory is often the central target in an internal network assessment. You may start unauthenticated and work toward demonstrating domain compromise, with a path that commonly follows the same shape: **get a foothold → enumerate everything → find a misconfiguration → escalate → reach high privilege**. This page maps that chain. It links to deep dives for each technique; read [Active Directory](AD.md) first for the concepts (forests, domains, trusts, tickets).
 
 {% hint style="info" %}
 The whole game is turning *some* credential (a captured hash, a sprayed password, a service ticket) into a *better* credential, over and over, until one of them is Domain Admin. Every box below feeds the next. Collect everything, [BloodHound](#enumerate-with-bloodhound) it, and follow the shortest path.

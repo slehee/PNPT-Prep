@@ -1,6 +1,6 @@
 # Lateral Movement
 
-Turning credentials from one host into execution on another. This is how a single foothold becomes domain-wide compromise, and it's the core of the PNPT internal — you land on a workstation, [dump credentials](credential-dumping.md), spray them, and hop until you own the DC. Every hop is a finding: record the source credential, the target, and the access you gained.
+Lateral movement turns credentials from one host into execution on another. This is how a single foothold can become domain-wide compromise: land on a workstation, [dump credentials](credential-dumping.md), validate them against authorized targets, and move toward systems that demonstrate the highest impact. Every hop is a finding; record the source credential, target, and access gained.
 
 {% hint style="warning" %}
 The single most important habit on the internal: **spray every credential the moment you get it**. One reused local-admin password or hash across a subnet is the most common path to Domain Admin. See [Credential Spray Protocol](#credential-spray-protocol) below.
