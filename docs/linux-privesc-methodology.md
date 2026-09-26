@@ -1,6 +1,24 @@
 # Linux Privilege Escalation
 
-Turning a low-priv Linux shell into root. Enumerate systematically — group membership, `sudo -l`, SUID binaries, and capabilities solve the overwhelming majority of boxes before a kernel exploit is ever needed.
+Linux privilege escalation turns a constrained shell into a more privileged execution context. Work from identity and configuration toward code execution: group membership, `sudo -l`, SUID binaries, capabilities, scheduled jobs, and writable service paths usually provide stronger evidence than kernel-version matching alone.
+
+{% hint style="danger" %}
+Run these techniques only on authorized targets or isolated training systems. Start with read-only enumeration, record the original state, and use the least invasive proof that demonstrates impact. When practicing a high-impact technique, snapshot the target first and follow the cleanup guidance.
+{% endhint %}
+
+## Methodology at a Glance
+
+| Phase | Goal | High-signal checks |
+| --- | --- | --- |
+| Context | Establish identity and host constraints | `id`, `sudo -l`, OS release, mount options, security modules |
+| Configuration | Find delegated or writable privilege | Sudo rules, SUID/SGID, capabilities, groups, cron, systemd |
+| Secrets | Identify scoped credential exposure | Environment, histories, configs, process arguments, SSH material |
+| Exploitation | Prove one escalation path | Minimum-impact command, marker, or protected-file read |
+| Closeout | Restore and verify | Remove test artifacts, repeat the trigger, preserve evidence |
+
+{% hint style="info" %}
+Check configuration-level primitives before kernel vulnerabilities. They are easier to validate, less likely to destabilize the target, and usually produce clearer remediation guidance.
+{% endhint %}
 
 {% hint style="warning" %}
 Run SUID enumeration **before** upgrading to a PTY. Certain AppArmor/namespace configurations hide binaries from `find` after a shell upgrade that were visible in the raw shell.
@@ -27,7 +45,7 @@ cat /proc/version
 ```
 
 {% hint style="info" %}
-**Reuse every credential everywhere.** `su` and `ssh` against every real user in `/etc/passwd` is the highest-ROI move once you have any password — it alone solves a large fraction of Linux boxes.
+Test recovered credentials only against in-scope identities and services. Start with the account or service the credential is associated with, record each authentication attempt, and avoid broad reuse that could trigger lockouts or touch unrelated systems.
 {% endhint %}
 
 ### Enumeration Tools
@@ -37,7 +55,7 @@ cat /proc/version
 wget "https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh" -O linpeas.sh
 chmod +x linpeas.sh
 ./linpeas.sh -a    # all checks - deeper system enumeration
-./linpeas.sh -s    # superfast & stealth
+./linpeas.sh -s    # reduced-output enumeration
 ./linpeas.sh -P    # pass a password to be used with sudo -l
 
 # Linux Smart Enumeration
@@ -64,11 +82,11 @@ chmod +x lse.sh
 | BeRoot | Cross-checks common privesc misconfigurations |
 | linuxprivchecker.py | Broad Python enumeration script |
 
-## Frequency-Ranked Escalation Vectors
+## Prioritized Escalation Vectors
 
 | Rank | Pattern | Notes |
 | --- | --- | --- |
-| 1 | **Password reuse** | Highest-ROI move — try every found credential against `su`/`ssh` for every user |
+| 1 | **Credential exposure or reuse** | Validate against the associated in-scope identity without causing lockouts |
 | 2 | **`sudo -l` abuse (GTFOBins first)** | Never assume a kernel exploit before checking the allowed binary |
 | 3 | **SUID / GTFOBins binaries** | `find / -perm -4000` then look each hit up |
 | 4 | **Cron abuse** | Writable root-run script, PATH hijack, wildcard injection, `LD_LIBRARY_PATH` |
@@ -77,7 +95,7 @@ chmod +x lse.sh
 | 7 | **Leaked / reused SSH keys** | Git history, world-readable keys, exposed shares |
 | 8 | **Writable / misconfigured systemd unit** | Combine with `NOPASSWD: /sbin/reboot` |
 | 9 | **Linux capabilities** | `cap_setuid=ep` on any interpreter = instant root |
-| 10 | **Kernel exploits** | LAST resort — enumeration beats CVE-roulette and won't crash the box |
+| 10 | **Kernel vulnerabilities** | Last resort; verify exact build and mitigations before controlled testing |
 
 ## SUID and SGID Binaries
 
@@ -465,6 +483,10 @@ cp libc.so.6 /var/tmp/flag15/
 
 ## Container Escape
 
+{% hint style="warning" %}
+The commands below cross the container boundary and provide host-root access. Keep them for isolated practice; on an assessment, begin with the read-only proofs and cleanup workflow in [Container Escape](container-escape.md).
+{% endhint %}
+
 ```bash
 # Privileged container with host filesystem
 docker run --rm -it --pid=host --net=host --privileged -v /:/host ubuntu bash
@@ -512,7 +534,7 @@ debugfs:  dump /etc/shadow /tmp/shadow
 
 ## Kernel Exploits
 
-Run these **after** enumeration paths are exhausted — kernel LPEs risk crashing the box.
+Run these only after configuration paths are exhausted. Kernel escalation can crash or corrupt the target, so verify the exact build, patch state, architecture, and active mitigations before controlled testing.
 
 | CVE | Affected | Notes |
 | --- | --- | --- |
@@ -612,6 +634,10 @@ ssh-keygen -t rsa -N "" -f /tmp/id_rsa
 cat /tmp/id_rsa.pub >> ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
 ```
+
+{% hint style="warning" %}
+Adding an SSH key creates durable access. Use a dedicated training key with a unique comment, and follow [Linux Persistence](linux-persistence.md) for scoped creation, detection evidence, exact-line removal, and verification.
+{% endhint %}
 
 **Strip a forced-command wrapper via `scp -O`** — when a private key's `authorized_keys` entry is prefixed `command="…/wrapper.sh"` but the wrapper still permits `scp`:
 
@@ -735,9 +761,27 @@ EOF
 sudo /sbin/reboot
 ```
 
+## Evidence and Cleanup
+
+For each tested path, capture the initial identity, vulnerable permission or configuration, exact proof command, resulting effective identity, and relevant logs. In live assessments, prefer protected-file metadata or a marker proof when a durable root shell is unnecessary. In isolated training, retain the complete procedure but still practice rollback.
+
+| Artifact | Cleanup verification |
+| --- | --- |
+| Temporary binary or library | File absent; original hash or package file intact |
+| SUID or capability change | Original mode or capability restored and re-read |
+| Cron, timer, or service change | Entry removed; trigger repeated without execution |
+| Account, sudoers, or SSH change | Exact entry removed; syntax and authentication rechecked |
+| Container or mount | Workload deleted; mount absent; no unexpected volume or image remains |
+
+{% hint style="warning" %}
+Never use broad cleanup commands that can remove legitimate configuration. Restore the exact object changed, verify the original owner and mode, and document anything that cannot be reverted safely.
+{% endhint %}
+
 ## Related
 
 - [Windows Privilege Escalation](windows-privesc-methodology.md)
+- [Linux Persistence](linux-persistence.md)
+- [Container Escape](container-escape.md)
 - [Password & Hash Attacks](password-hash-attacks.md)
 - [Credential Dumping](credential-dumping.md)
 - [Lateral Movement](lateral-movement.md)
