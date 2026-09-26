@@ -9,6 +9,10 @@ To beat this challenge, you'll have to spread throughout the cluster and escalat
 Good luck! 
 ```
 
+{% hint style="info" %}
+This page preserves the challenge-specific walkthrough. For a reusable methodology covering runtime detection, Docker socket exposure, Kubernetes service accounts, hostPath proof, LXD/LXC, evidence, and cleanup, see [Container Escape](container-escape.md).
+{% endhint %}
+
 ## Useful Kubernetes Commands for CTFs (Game of Pods Challenge)
 
 ## Pod Environment & Filesystem Discovery

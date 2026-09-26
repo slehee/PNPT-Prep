@@ -720,6 +720,7 @@ msiexec /fa {PRODUCT_GUID}       # triggers CustomActions during repair
 ## Related
 
 - [Linux Privilege Escalation](linux-privesc-methodology.md)
+- [Windows Persistence](windows-persistence.md)
 - [Password & Hash Attacks](password-hash-attacks.md)
 - [Credential Dumping](credential-dumping.md)
 - [Lateral Movement](lateral-movement.md)

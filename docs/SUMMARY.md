@@ -14,6 +14,7 @@
 
 ## Web Attacks
 
+* [Web Proxy Guide](web-proxy-guide.md)
 * [HTTP Attacks](http-attacks.md)
 * [Cross-Site Scripting (XSS)](xss.md)
 * [SQL Injection](sql-injection.md)
@@ -25,15 +26,19 @@
 ## Access & Post-Exploitation
 
 * [Shells & Payloads](shells-payloads.md)
+* [PowerShell Operations](powershell-guide.md)
 * [File Transfers](file-transfers.md)
 * [Credential Dumping](credential-dumping.md)
 * [Lateral Movement](lateral-movement.md)
 * [Pivoting & Tunneling](pivoting-tunneling.md)
+* [Windows Persistence](windows-persistence.md)
+* [Linux Persistence](linux-persistence.md)
 
 ## Privilege Escalation
 
 * [Windows Privilege Escalation](windows-privesc-methodology.md)
 * [Linux Privilege Escalation](linux-privesc-methodology.md)
+* [Container Escape](container-escape.md)
 * [Password & Hash Attacks](password-hash-attacks.md)
 
 ## Active Directory
