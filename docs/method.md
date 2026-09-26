@@ -1,4 +1,7 @@
-# Ethical Hacking Methodology
+# PNPT Methodology
+
+This page outlines the five-stage ethical hacking methodology used throughout these PNPT preparation notes.
+
 There are 5 stages when conducting pen-testing/ ethical hacking:
 
 ## 1. Reconnaissance:

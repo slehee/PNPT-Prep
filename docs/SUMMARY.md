@@ -2,10 +2,10 @@
 
 * [Introduction](index.md)
 
-## Penetration Testing
+## PNPT Preparation
 
 * [PNPT Overview](intro.md)
-* [Methodology](method.md)
+* [PNPT Methodology](method.md)
 
 ## Recon & Enumeration
 

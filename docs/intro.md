@@ -1,5 +1,6 @@
+# PNPT Overview
 
-# Practical Ethical Hacking Intro:
+These notes cover the core engagement types and reporting concepts used throughout PNPT preparation, including foundational material from Practical Ethical Hacking.
 
 ## Types of Pentests:
 ### External Network Pentest
