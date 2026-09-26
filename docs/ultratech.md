@@ -186,6 +186,6 @@ Which means that it takes priority to execute in thius case!!
 
 ---
 
-**Status:** Root Access Achieved ✅
+**Status:** Root Access Achieved
 
 

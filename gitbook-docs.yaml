@@ -1,0 +1,11 @@
+$schema: https://api.gitbook.com/gitbook-docs.yaml
+site:
+  title: Security Engineering Notes
+  structure:
+    - type: space
+      key: security-engineering
+      title: Security Engineering Notes
+      path: .
+      default: true
+      content:
+        directory: .

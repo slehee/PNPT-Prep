@@ -213,14 +213,17 @@ cat /root/root.txt
 ```
 
 ### Final Summary
-Step	Description	Status
-Recon	Port scan, subdomain enum	✅
-SQLi	n8n webhook injection	✅
-Restore	Restic backup and 7z crack	✅
-Pivot	SSH as Bob and Morpheus	✅
-Reversing	Analyze and recreate password gen	✅
-Brute	Brute-force neo login	✅
-Root	sudo escalation	✅
+
+| Step | Description |
+|------|-------------|
+| Recon | Port scan, subdomain enum |
+| SQLi | n8n webhook injection |
+| Restore | Restic backup and 7z crack |
+| Pivot | SSH as Bob and Morpheus |
+| Reversing | Analyze and recreate password gen |
+| Brute | Brute-force neo login |
+| Root | sudo escalation |
+
 ### Takeaways
 
     n8n workflows can expose dangerous injection paths

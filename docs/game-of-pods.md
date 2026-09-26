@@ -9,9 +9,9 @@ To beat this challenge, you'll have to spread throughout the cluster and escalat
 Good luck! 
 ```
 
-## 🛠️ Useful Kubernetes Commands for CTFs (Game of Pods Challenge)
+## Useful Kubernetes Commands for CTFs (Game of Pods Challenge)
 
-## 📁 Pod Environment & Filesystem Discovery
+## Pod Environment & Filesystem Discovery
 
 `cat /etc/os-release`
 ### Shows OS version and distro — helps confirm if the base image is Alpine, Ubuntu, etc.
@@ -31,7 +31,7 @@ Good luck!
 `grep -r "WIZ_CTF{" / 2>/dev/null`
 ### Searches all files for the flag pattern. Ignores permission errors.
 
-### 🔐 Kubernetes API Access From Inside a Pod
+### Kubernetes API Access From Inside a Pod
 
 `cat /var/run/secrets/kubernetes.io/serviceaccount/token`
 ### Reads the service account token — used to authenticate with the Kubernetes API server.
@@ -42,7 +42,7 @@ Good luck!
 `curl -sSk -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" https://kubernetes.default.svc`
 ### Tests basic Kubernetes API access with the token.
 
-### 🧠 Kubernetes API Enumeration via curl
+### Kubernetes API Enumeration via curl
 ```bash
 curl -sSk -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
   https://kubernetes.default.svc/api/v1/namespaces/staging/pods | jq`
@@ -61,7 +61,7 @@ curl -sSk -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/service
   https://kubernetes.default.svc/api/v1/namespaces/staging/serviceaccounts | jq
 # Lists ServiceAccounts in the namespace. Helpful to find more privileged accounts.
 ```
-### 🔍 Image & Registry Enumeration
+### Image & Registry Enumeration
 
 `docker pull hustlehub.azurecr.io/test:latest`
 ### Attempts to pull the container image from a private Azure Container Registry (ACR).
@@ -73,7 +73,7 @@ curl -sSk -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/service
 `docker inspect hustlehub.azurecr.io/test:latest`
 ### Shows image metadata, history, labels, and env vars. Useful to inspect for embedded flags or secrets.
 
-### 📦 Azure ACR Registry Access
+### Azure ACR Registry Access
 
 `az acr repository list --name hustlehub --output table`
 ### Tries to list public images in the ACR. Requires az CLI and public access.

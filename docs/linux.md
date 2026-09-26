@@ -366,8 +366,9 @@ uid=1000(TCM) gid=1000(user) euid=0(root)
 ```
 The **effective user ID (`euid=0`) is root**, confirming privilege escalation.
 
-!!!importanat 
-    One of the most comon cron jobs Priv Esc technique is the file overwrites!
+{% hint style="info" %}
+One of the most comon cron jobs Priv Esc technique is the file overwrites!
+{% endhint %}
 
 ## Why Does This Work?
 - **Cron jobs execute scripts as root**.

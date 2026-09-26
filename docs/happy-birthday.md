@@ -327,7 +327,7 @@ WIZ_CTF{s3_turns_20_and_the_party_is_just_getting_started}
 
 ---
 
-## 🏆 Flag
+## Flag
 
 ```
 WIZ_CTF{s3_turns_20_and_the_party_is_just_getting_started}

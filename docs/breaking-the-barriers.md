@@ -230,8 +230,9 @@ Since your malicious app has the role `User.Invite.All`, you can invite your own
 
 This will cause the new guest account to be auto-placed into the "Users assigned access to flag" group, giving you the intended access path for the challenge.
 
-!!!note
-    Every request to the Microsoft Graph API must include an OAuth 2.0 access token in the Authorization header
+{% hint style="info" %}
+Every request to the Microsoft Graph API must include an OAuth 2.0 access token in the Authorization header
+{% endhint %}
 
 ```bash
 

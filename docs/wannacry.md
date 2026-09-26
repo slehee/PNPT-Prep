@@ -200,17 +200,20 @@ Therefore, a whole bunch of arguments are marshaled to make an API call.
 The first API call made is `InternetOpenA`, which prepares to open a handle to a given web resource. At this point, the contents of `eax` are moved into `esi` and pushed onto the stack as well.
 
 
-!!!note
-    `ESI` is the source index register in x86 architecture. It is commonly used for string and memory operations, often serving as a pointer to source data in memory, but can also be used as a general-purpose register to hold values or pointers during function calls and data movement.
+{% hint style="info" %}
+`ESI` is the source index register in x86 architecture. It is commonly used for string and memory operations, often serving as a pointer to source data in memory, but can also be used as a general-purpose register to hold values or pointers during function calls and data movement.
+{% endhint %}
 
-!!!note
-    `EAX` is the primary accumulator register in x86 architecture. It is commonly used to store the result of operations or function return values, and is often used for passing data between instructions or API calls.
+{% hint style="info" %}
+`EAX` is the primary accumulator register in x86 architecture. It is commonly used to store the result of operations or function return values, and is often used for passing data between instructions or API calls.
 
-    
+
+{% endhint %}
 Then once we take a look at the `Decompiler tab` (down left), here the outcome of the `InternetopenA URL` is loaded into the register `eax` then it is loaded into the `edi` register.
 
-!!!note
-    `EDI` is the destination index register in x86 architecture. It is often used for operations involving memory copying, string manipulation, or as a general-purpose register to hold pointers or handles, especially in API call sequences.
+{% hint style="info" %}
+`EDI` is the destination index register in x86 architecture. It is often used for operations involving memory copying, string manipulation, or as a general-purpose register to hold pointers or handles, especially in API call sequences.
+{% endhint %}
 
 ![cutter](assets/img/cutter2.png)
 
