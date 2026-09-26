@@ -6,7 +6,50 @@
 
 * [PNPT Overview](intro.md)
 * [Methodology](method.md)
-* [Active Directory](AD.md)
+
+## Recon & Enumeration
+
+* [Enumeration & Scanning](enumeration-scanning.md)
+* [Web Enumeration](web-enumeration.md)
+
+## Web Attacks
+
+* [HTTP Attacks](http-attacks.md)
+* [Cross-Site Scripting (XSS)](xss.md)
+* [SQL Injection](sql-injection.md)
+* [Command Injection](command-injection.md)
+* [File Inclusion](file-inclusion.md)
+* [File Upload](file-upload.md)
+* [Server-Side Attacks](server-side-attacks.md)
+
+## Access & Post-Exploitation
+
+* [Shells & Payloads](shells-payloads.md)
+* [File Transfers](file-transfers.md)
+* [Credential Dumping](credential-dumping.md)
+* [Lateral Movement](lateral-movement.md)
+* [Pivoting & Tunneling](pivoting-tunneling.md)
+
+## Privilege Escalation
+
+* [Windows Privilege Escalation](windows-privesc-methodology.md)
+* [Linux Privilege Escalation](linux-privesc-methodology.md)
+* [Password & Hash Attacks](password-hash-attacks.md)
+
+## Active Directory
+
+* [AD Concepts](AD.md)
+* [AD Attack Chain](ad-attacks.md)
+* [Kerberos Attacks](kerberos-attacks.md)
+* [ACL Abuse](acl-abuse.md)
+* [ADCS Attacks](adcs-attacks.md)
+* [Relay & Coerce](relay-and-coerce.md)
+* [CrackMapExec / NetExec](crackmapexec-netexec.md)
+* [Mimikatz](mimikatz.md)
+
+## Reporting
+
+* [Report Writing](report-writing.md)
 
 ## Malware Analysis
 
